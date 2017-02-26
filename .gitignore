@@ -54,6 +54,6 @@ node_modules
 # bamboo json result file
 jscs-report.json
 jshint-report.json
-
+/node_modules
 # client/build
 build.tar
