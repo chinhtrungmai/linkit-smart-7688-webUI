@@ -72,6 +72,7 @@ export default class networkComponent extends React.Component {
     this.state.showRepeaterPassword = false;
     this.state.notPassPassword = false;
     this.state.notPassRepeaterPassword = false;
+    this.state.showStaticIP = false;
     this.state.selectValue = 0;
     this.state.staContent = {
       ssid: this.props.boardInfo.wifi.sta.ssid || '',
@@ -88,6 +89,15 @@ export default class networkComponent extends React.Component {
     };
 
     this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
+    this.state.proto = this.props.boardInfo.network.lan.proto;
+
+    this.state.staticContent = {
+        ipaddr: this.props.boardInfo.network.lan.ipaddr || '',
+    };
+
+    this.state.dhcpContent = {
+        ipaddr: '',
+    };
 
     switch (this.state.mode) {
     case 'ap':
@@ -109,10 +119,21 @@ export default class networkComponent extends React.Component {
       break;
     }
 
+    switch (this.state.proto) {
+    case 'static':
+      this.state.showStaticIP = true;
+      break;
+    case 'dhcp':
+      break;
+    default:
+      break;
+    }
+
     this._scanWifi = ::this._scanWifi;
     this._onRadioButtonClick = ::this._onRadioButtonClick;
     this._handleSelectValueChange = ::this._handleSelectValueChange;
     this._handleSettingMode = ::this._handleSettingMode;
+    this._handleSettingProto = ::this._handleSettingProto;
     this.selectWifiList = false;
     this._returnToIndex = ::this._returnToIndex;
     this._cancelErrorMsgDialog = ::this._cancelErrorMsgDialog;
@@ -160,9 +181,13 @@ export default class networkComponent extends React.Component {
       marginBottom: '44px',
     };
     let elem;
+    let elem2;
     let staPassword;
 
     if (this.state.showPassword) {
+      textType = 'text';
+    }
+    if (this.state.showStaticIP) {
       textType = 'text';
     }
     if (this.state.showRepeaterPassword) {
@@ -200,6 +225,34 @@ export default class networkComponent extends React.Component {
         onTouchTap={ this._cancelErrorMsgDialog }
         hoverColor="none" />,
     ];
+
+    if (this.state.proto === 'static') {
+      elem2 = (
+        <div>
+          <TextField
+          hintText={__('Input your choosen IP')}
+          type="text"
+          value={ this.state.staticContent.ipaddr }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staticContent: {
+                  ipaddr: e.target.value,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('IP Address') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+        </div>
+      );
+    }
 
     if (this.state.mode === 'sta') {
       if (this.state.staContent.encryption) {
@@ -566,7 +619,7 @@ export default class networkComponent extends React.Component {
             <p style={{ color: '#999A94', marginTop: '-20px' }}>{ this.state.errorMsg }</p>
           </Dialog>
           <div style={ styles.content }>
-            <h3>{__('Network setting')}</h3>
+            <h3>{__('Wifi setting')}</h3>
             <RadioButtonGroup name="mode" defaultSelected={ this.state.mode } style={{ display: 'flex', paddingTop: '20px' }} >
               <RadioButton
                 value="ap"
@@ -604,23 +657,52 @@ export default class networkComponent extends React.Component {
             }}>
               <RaisedButton
                 linkButton
-                label={__('Cancel')}
+                secondary
+                label={__('Configure & Restart')}
+                backgroundColor={ Colors.amber700 }
+                onTouchTap={ this._handleSettingMode }
                 style={{
                   width: '236px',
                   flexGrow: 1,
                   textAlign: 'center',
                   marginTop: '20px',
                   marginBottom: '20px',
-                  marginRight: '10px',
+                  marginLeft: '10px',
+                }} />
+            </div>
+            <h3>{__('LAN setting')}</h3>
+            <RadioButtonGroup name="proto" defaultSelected={ this.state.proto } style={{ display: 'flex', paddingTop: '20px' }} >
+              <RadioButton
+                value="dhcp"
+                style={{
+                  color: Colors.amber700,
+                  marginBottom: 16,
+                  width: '150px',
                 }}
-                backgroundColor="#EDEDED"
-                labelColor="#999A94" />
+                label={__('DHCP mode')}
+                onTouchTap={() => this._onRadioButtonClick('dhcp')}/>
+              <RadioButton
+                value="static"
+                label={__('Static mode')}
+                onTouchTap={() => this._onRadioButtonClick('static')}
+                style={{
+                  color: Colors.amber700,
+                  marginBottom: 16,
+                  width: '170px',
+                }}/>
+            </RadioButtonGroup>
+            { elem2 }
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
               <RaisedButton
                 linkButton
                 secondary
                 label={__('Configure & Restart')}
                 backgroundColor={ Colors.amber700 }
-                onTouchTap={ this._handleSettingMode }
+                onTouchTap={ this._handleSettingProto }
                 style={{
                   width: '236px',
                   flexGrow: 1,
@@ -683,6 +765,11 @@ export default class networkComponent extends React.Component {
         this.setState({ mode: mode });
       }
       break;
+    case 'static':
+      this.setState({ proto: mode, showStaticIP: true});
+    case 'dhcp':
+      this.setState({ proto: mode, showStaticIP: false});
+      break;
     default:
       break;
     }
@@ -734,6 +821,33 @@ export default class networkComponent extends React.Component {
     .then(() => {
       return AppActions.setWifiMode(this.state.mode, window.session);
     })
+    .then(() => {
+      return AppActions.commitAndReboot(window.session)
+      .catch((err) => {
+        if (err === 'no data') {
+          return false;
+        }
+        return err;
+      });
+    })
+    .then(() => {
+      return this$._returnToIndex(__('Configuration saved. You can sign in to the console after your device has restarted.'));
+    })
+    .catch((err) => {
+      if (err === 'Access denied') {
+        this$.setState({
+          errorMsgTitle: __('Access denied'),
+          errorMsg: __('Your token was expired, please sign in again.'),
+        });
+        return this$.refs.errorMsg.show();
+      }
+      alert('[' + err + '] Please try again!');
+    });
+  }
+
+  _handleSettingProto() {
+    const this$ = this;
+    return AppActions.setLAN(this.state.proto, this.state[ this.state.proto + 'Content'], window.session)
     .then(() => {
       return AppActions.commitAndReboot(window.session)
       .catch((err) => {

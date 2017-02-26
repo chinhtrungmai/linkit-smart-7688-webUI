@@ -71,6 +71,9 @@ const appActions = {
       return rpc.uciCommit('network', session);
     });
   },
+  setLAN: (mode, content, session) => {
+    return rpc.setLANProtoConfig(mode, content.ipaddr, session);
+  },
   scanWifi: (session) => {
     return rpc.scanWifi(session);
   },

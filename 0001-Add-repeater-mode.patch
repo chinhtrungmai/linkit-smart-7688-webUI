@@ -1,0 +1,734 @@
+From 6a5897c2e294491c9fd329af4859ef0e351c1bce Mon Sep 17 00:00:00 2001
+From: "po-ju.chen" <po-ju.chen@mediatek.com>
+Date: Wed, 8 Jun 2016 15:50:01 +0800
+Subject: [PATCH] Add repeater mode
+
+---
+ app/lib/actions/appActions.js  |  44 ++++-
+ app/lib/components/network.jsx | 361 +++++++++++++++++++++++++++++++++--------
+ app/lib/components/sysinfo.jsx |  16 +-
+ app/lib/util/rpcAPI.js         |  94 ++++++++++-
+ 4 files changed, 428 insertions(+), 87 deletions(-)
+
+diff --git a/app/lib/actions/appActions.js b/app/lib/actions/appActions.js
+index b225be9..52bc7dd 100644
+--- a/app/lib/actions/appActions.js
++++ b/app/lib/actions/appActions.js
+@@ -28,21 +28,47 @@ const appActions = {
+       return rpc.reboot(session);
+     });
+   },
+-
+   loadModel: (session) => {
+     return rpc.loadModel(session);
+   },
++  setWifi: (mode, content, session) => {
++    if (mode === 'apsta') {
++      return rpc.setWifi('sta', content.ssid, content.key, session)
++      .then(() => {
++        return rpc.setWifi('ap', content.repeaterSsid, content.repeaterKey, session);
++      });
++    }
++    return rpc.setWifi(mode, content.ssid, content.key, session);
++  },
++  setWifiMode: (mode, session) => {
++    let network = 'lan';
++    let ignore = 1;
++    let proto = 'dhcp';
+ 
+-  setWifi: (section, ssid, key, session) => {
+-    let disabled = 1;
+-    let mode = 'ap';
+-    if (section === 'station') {
+-      mode = 'sta';
+-      disabled = 0;
++    if (mode !== 'apsta') {
++      network = 'wan';
++      ignore = 0;
++      proto = 'static';
+     }
+-    return rpc.changeWifiMode(disabled, session)
++
++    return rpc.setWifiMode(mode, session)
++    .then(() => {
++      return rpc.setWifiNetworkConfig(network, session);
++    })
++    .then(() => {
++      return rpc.uciCommit('wireless', session);
++    })
++    .then(() => {
++      return rpc.setWifiIgnoreConfig(ignore, session);
++    })
++    .then(() => {
++      return rpc.uciCommit('dhcp', session);
++    })
++    .then(() => {
++      return rpc.setWifiProtoConfig(proto, session);
++    })
+     .then(() => {
+-      return rpc.setWifi(mode, ssid, key, session);
++      return rpc.uciCommit('network', session);
+     });
+   },
+   scanWifi: (session) => {
+diff --git a/app/lib/components/network.jsx b/app/lib/components/network.jsx
+index d0019b8..41d5a91 100644
+--- a/app/lib/components/network.jsx
++++ b/app/lib/components/network.jsx
+@@ -53,6 +53,7 @@ export default class networkComponent extends React.Component {
+       payload: 0,
+       text: __('Choose the Wi-Fi network.'),
+     }];
++
+     if (this.props.boardInfo.wifi.ap.encryption === 'none') {
+       this.state.apContent = {
+         ssid: this.props.boardInfo.wifi.ap.ssid || '',
+@@ -68,22 +69,46 @@ export default class networkComponent extends React.Component {
+     }
+ 
+     this.state.showPassword = false;
++    this.state.showRepeaterPassword = false;
+     this.state.notPassPassword = false;
++    this.state.notPassRepeaterPassword = false;
+     this.state.selectValue = 0;
+-    this.state.stationContent = {
++    this.state.staContent = {
++      ssid: this.props.boardInfo.wifi.sta.ssid || '',
++      key: this.props.boardInfo.wifi.sta.key || '',
++      encryption: this.props.boardInfo.wifi.sta.encryption.enabled || false,
++    };
++
++    this.state.apstaContent = {
+       ssid: this.props.boardInfo.wifi.sta.ssid || '',
+       key: this.props.boardInfo.wifi.sta.key || '',
+       encryption: this.props.boardInfo.wifi.sta.encryption.enabled || false,
++      repeaterSsid: this.props.boardInfo.wifi.ap.ssid || '',
++      repeaterKey: this.props.boardInfo.wifi.ap.key || '',
+     };
+ 
+-    if (this.props.boardInfo.wifi.sta.disabled === '1') {
+-      this.state.mode = 'ap';
++    this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
++
++    switch (this.state.mode) {
++    case 'ap':
+       if (this.state.apContent.key.length > 0 && this.state.apContent.key.length < 8 ) {
+         this.state.notPassPassword = true;
+       }
+-    } else {
+-      this.state.mode = 'station';
++      break;
++    case 'sta':
++      break;
++    case 'apsta':
++      if (this.state.apstaContent.key.length > 0 && this.state.apstaContent.key.length < 8 ) {
++        this.state.notPassPassword = true;
++      }
++      if (this.state.apstaContent.repeaterKey.length > 0 && this.state.apstaContent.repeaterKey.length < 8 ) {
++        this.state.notPassRepeaterPassword = true;
++      }
++      break;
++    default:
++      break;
+     }
++
+     this._scanWifi = ::this._scanWifi;
+     this._onRadioButtonClick = ::this._onRadioButtonClick;
+     this._handleSelectValueChange = ::this._handleSelectValueChange;
+@@ -109,7 +134,6 @@ export default class networkComponent extends React.Component {
+         checkedColor: '#00a1de',
+       },
+     });
+-
+     AppActions.loadModel(window.session)
+     .then((data) => {
+       return this$.setState({ boardModel: data.body.result[1].model });
+@@ -128,6 +152,7 @@ export default class networkComponent extends React.Component {
+ 
+   render() {
+     let textType = 'password';
++    let repeaterTextType = 'password';
+     let errorText;
+     let boardImg = icon7688Duo;
+     let showPasswordStyle = {
+@@ -135,12 +160,15 @@ export default class networkComponent extends React.Component {
+       marginBottom: '44px',
+     };
+     let elem;
+-    let stationPassword;
++    let staPassword;
+ 
+     if (this.state.showPassword) {
+       textType = 'text';
+     }
+-    if (this.state.notPassPassword) {
++    if (this.state.showRepeaterPassword) {
++      repeaterTextType = 'text';
++    }
++    if (this.state.notPassPassword || this.state.notPassRepeaterPassword) {
+       errorText = (
+         <div>
+           <p style={{
+@@ -173,46 +201,92 @@ export default class networkComponent extends React.Component {
+         hoverColor="none" />,
+     ];
+ 
+-    if (this.state.stationContent.encryption) {
+-      stationPassword = (
+-        <div>
+-          <TextField
+-            style={{ width: '100%' }}
+-            value={ this.state.stationContent.key }
+-            hintText={__('Please enter your password')}
+-            floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+-            type={ textType }
+-            onChange={
+-              (e) => {
+-                this.setState({
+-                  stationContent: {
+-                    ssid: this.state.stationContent.ssid,
+-                    key: e.target.value,
+-                    encryption: true,
+-                  },
+-                });
++    if (this.state.mode === 'sta') {
++      if (this.state.staContent.encryption) {
++        staPassword = (
++          <div>
++            <TextField
++              style={{ width: '100%' }}
++              value={ this.state.staContent.key }
++              hintText={__('Please enter your password')}
++              floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
++              underlineFocusStyle={{ borderColor: Colors.amber700 }}
++              type={ textType }
++              onChange={
++                (e) => {
++                  this.setState({
++                    staContent: {
++                      ssid: this.state.staContent.ssid,
++                      key: e.target.value,
++                      encryption: true,
++                    },
++                  });
++                }
+               }
+-            }
+-            floatingLabelText={__('Password')} />
+-          <a
+-            onTouchTap={
+-              () => {
+-                this.setState({
+-                  showPassword: !this.state.showPassword,
+-                });
++              floatingLabelText={__('Password')} />
++            <a
++              onTouchTap={
++                () => {
++                  this.setState({
++                    showPassword: !this.state.showPassword,
++                  });
++                }
+               }
+-            }
+-            style={{
+-              textAlign: 'left',
+-              color: Colors.amber700,
+-              textDecoration: 'none',
+-              cursor: 'pointer',
+-              fontSize: '14px',
+-            }}>{ __('SHOW PASSWORD') }</a>
+-        </div>
+-      );
++              style={{
++                textAlign: 'left',
++                color: Colors.amber700,
++                textDecoration: 'none',
++                cursor: 'pointer',
++                fontSize: '14px',
++              }}>{ __('SHOW PASSWORD') }</a>
++          </div>
++        );
++      }
++    } else if (this.state.mode === 'apsta') {
++      if (this.state.apstaContent.encryption) {
++        staPassword = (
++          <div>
++            <TextField
++              style={{ width: '100%' }}
++              value={ this.state.apstaContent.key }
++              hintText={__('Please enter your password')}
++              floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
++              underlineFocusStyle={{ borderColor: Colors.amber700 }}
++              type={ textType }
++              onChange={
++                (e) => {
++                  this.setState({
++                    apstaContent: {
++                      ssid: this.state.apstaContent.ssid,
++                      key: e.target.value,
++                      encryption: true,
++                      repeaterSsid: this.state.apstaContent.repeaterSsid,
++                      repeaterKey: this.state.apstaContent.repeaterKey,
++                    },
++                  });
++                }
++              }
++              floatingLabelText={__('Password')} />
++            <a
++              onTouchTap={
++                () => {
++                  this.setState({
++                    showPassword: !this.state.showPassword,
++                  });
++                }
++              }
++              style={{
++                textAlign: 'left',
++                color: Colors.amber700,
++                textDecoration: 'none',
++                cursor: 'pointer',
++                fontSize: '14px',
++              }}>{ __('SHOW PASSWORD') }</a>
++          </div>
++        );
++      }
+     }
++
+     switch (this.state.mode) {
+     case 'ap':
+       elem = (
+@@ -299,7 +373,35 @@ export default class networkComponent extends React.Component {
+       );
+ 
+       break;
+-    case 'station':
++    case 'sta':
++      elem = (
++        <div>
++          <SelectField
++            style={{
++              width: '100%',
++              maxWidth: '512px',
++              position: 'absolute',
++            }}
++            multiLine
++            underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
++            menuItemStyle={{ maxHeight: '100px' }}
++            floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
++            underlineFocusStyle={{ borderColor: Colors.amber700 }}
++            floatingLabelText={
++              <div>
++                { __('Detected Wi-Fi network') } <b style={{ color: 'red' }}>*</b>
++              </div>
++            }
++            onChange={ this._handleSelectValueChange.bind(null, 'selectValue') }
++            value={ Number(this.state.selectValue) }
++            menuItems={ this.state.wifiList } />
++          <RaisedButton style={{ marginTop: '75px' }} label={__('Refresh')} onTouchTap={ this._scanWifi } />
++          <br />
++          { staPassword }
++        </div>
++      );
++      break;
++    case 'apsta':
+       elem = (
+         <div>
+           <SelectField
+@@ -323,14 +425,106 @@ export default class networkComponent extends React.Component {
+             menuItems={ this.state.wifiList } />
+           <RaisedButton style={{ marginTop: '75px' }} label={__('Refresh')} onTouchTap={ this._scanWifi } />
+           <br />
+-          { stationPassword }
++          { staPassword }
++          <TextField
++            hintText={__('Input your SSID')}
++            type="text"
++            value={ this.state.apstaContent.repeaterSsid }
++            style={{ width: '100%' }}
++            onChange={
++              (e) => {
++                this.setState({
++                  apstaContent: {
++                    ssid: this.state.apstaContent.ssid,
++                    key: this.state.apstaContent.key,
++                    encryption: this.state.apstaContent.encryption,
++                    repeaterSsid: e.target.value,
++                    repeaterKey: this.state.apstaContent.repeaterKey,
++                  },
++                });
++              }
++            }
++            underlineFocusStyle={{ borderColor: Colors.amber700 }}
++            floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
++            floatingLabelText={
++              <div>
++                { __('Network name') } <b style={{ color: 'red' }}>*</b>
++              </div>
++            }
++          />
++          <TextField
++            hintText={__('Please enter your password')}
++            errorStyle={{ borderColor: Colors.amber700 }}
++            errorText={ errorText }
++            type={ repeaterTextType }
++            underlineFocusStyle={{ borderColor: Colors.amber700 }}
++            floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
++            value={ this.state.apstaContent.repeaterKey }
++            onChange={
++              (e) => {
++                if ( e.target.value.length > 0 && e.target.value.length < 8) {
++                  this.setState({
++                    apstaContent: {
++                      ssid: this.state.apstaContent.ssid,
++                      key: this.state.apstaContent.key,
++                      encryption: this.state.apstaContent.encryption,
++                      repeaterSsid: this.state.apstaContent.repeaterSsid,
++                      repeaterKey: e.target.value,
++                    },
++                    notPassRepeaterPassword: true,
++                  });
++                } else if (e.target.value.length === 0) {
++                  this.setState({
++                    apstaContent: {
++                      ssid: this.state.apstaContent.ssid,
++                      key: this.state.apstaContent.key,
++                      encryption: this.state.apstaContent.encryption,
++                      repeaterSsid: this.state.apstaContent.repeaterSsid,
++                      repeaterKey: e.target.value,
++                    },
++                    notPassRepeaterPassword: false,
++                  });
++                } else {
++                  this.setState({
++                    apstaContent: {
++                      ssid: this.state.apstaContent.ssid,
++                      key: this.state.apstaContent.key,
++                      encryption: this.state.apstaContent.encryption,
++                      repeaterSsid: this.state.apstaContent.repeaterSsid,
++                      repeaterKey: e.target.value,
++                    },
++                    notPassRepeaterPassword: false,
++                  });
++                }
++              }
++            }
++            style={{ width: '100%' }}
++            floatingLabelText={__('Password')} />
++            <div style={ showPasswordStyle }>
++            <a
++              onTouchTap={
++                () => {
++                  this.setState({
++                    showRepeaterPassword: !this.state.showRepeaterPassword,
++                  });
++                }
++              }
++              style={{
++                textAlign: 'left',
++                color: Colors.amber700,
++                textDecoration: 'none',
++                cursor: 'pointer',
++                fontSize: '14px',
++              }}>{ __('SHOW PASSWORD') }</a>
++          </div>
+         </div>
+       );
+       break;
+     default:
+       break;
+     }
+-    if (this.state.boardModel === 'MediaTek LinkIt Smart7688') {
++
++    if (this.state.boardModel === 'MediaTek LinkIt Smart 7688') {
+       boardImg = icon7688;
+     }
+ 
+@@ -373,7 +567,7 @@ export default class networkComponent extends React.Component {
+           </Dialog>
+           <div style={ styles.content }>
+             <h3>{__('Network setting')}</h3>
+-            <RadioButtonGroup name="shipSpeed" defaultSelected={ this.state.mode } style={{ display: 'flex', paddingTop: '20px' }} >
++            <RadioButtonGroup name="mode" defaultSelected={ this.state.mode } style={{ display: 'flex', paddingTop: '20px' }} >
+               <RadioButton
+                 value="ap"
+                 style={{
+@@ -384,9 +578,18 @@ export default class networkComponent extends React.Component {
+                 label={__('AP mode')}
+                 onTouchTap={() => this._onRadioButtonClick('ap')}/>
+               <RadioButton
+-                value="station"
++                value="sta"
+                 label={__('Station mode')}
+-                onTouchTap={() => this._onRadioButtonClick('station')}
++                onTouchTap={() => this._onRadioButtonClick('sta')}
++                style={{
++                  color: Colors.amber700,
++                  marginBottom: 16,
++                  width: '170px',
++                }}/>
++              <RadioButton
++                value="apsta"
++                label={__('Repeater mode')}
++                onTouchTap={() => this._onRadioButtonClick('apsta')}
+                 style={{
+                   color: Colors.amber700,
+                   marginBottom: 16,
+@@ -437,7 +640,9 @@ export default class networkComponent extends React.Component {
+     return AppActions.scanWifi(window.session)
+     .then((data) => {
+       let selectValue;
+-      const stationModeInfo = this$.state.stationContent;
++      const staModeInfo = this$.state.staContent;
++      const apstaModeInfo = this$.state.apstaContent;
++
+       for (let i = 0; i < data.body.result[1].results.length; i++ ) {
+         data.body.result[1].results[i].payload = i + 1;
+         data.body.result[1].results[i].text = data.body.result[1].results[i].ssid + ' ( ' + data.body.result[1].results[i].quality + ' % )';
+@@ -445,23 +650,41 @@ export default class networkComponent extends React.Component {
+         // To know which wifi use this wifi ssid.
+         if (this$.props.boardInfo.wifi.sta.ssid === data.body.result[1].results[i].ssid) {
+           selectValue = i + 1;
+-          stationModeInfo.encryption = data.body.result[1].results[i].encryption.enabled;
++          staModeInfo.encryption = data.body.result[1].results[i].encryption.enabled;
++          apstaModeInfo.encryption = data.body.result[1].results[i].encryption.enabled;
+         }
+       }
+ 
+       return this$.setState({
+         selectValue: selectValue,
+-        stationContent: stationModeInfo,
++        staContent: staModeInfo,
++        apstaContent: apstaModeInfo,
+         wifiList: data.body.result[1].results,
+       });
+     });
+   }
+ 
+   _onRadioButtonClick(mode) {
+-    if (mode === 'ap' && this.state.apContent.key.length > 0 && this.state.apContent.key.length < 8) {
+-      this.setState({ mode: mode, notPassPassword: true, showPassword: false });
+-    } else {
+-      this.setState({ mode: mode, notPassPassword: false, showPassword: false });
++    switch (mode) {
++    case 'ap':
++      if (this.state.apContent.key.length > 0 && this.state.apContent.key.length < 8) {
++        this.setState({ mode: mode, notPassPassword: true, showPassword: false});
++      } else {
++        this.setState({ mode: mode });
++      }
++      break;
++    case 'sta':
++      this.setState({ mode: mode, notPassPassword: false, showPassword: false, showRepeaterPassword: false, notPassRepeaterPassword: false });
++      break;
++    case 'apsta':
++      if (this.state.apstaContent.key.length > 0 && this.state.apstaContent.key.length < 8) {
++        this.setState({ mode: mode, notPassPassword: false, showPassword: false, showRepeaterPassword: false, notPassRepeaterPassword: false });
++      } else {
++        this.setState({ mode: mode });
++      }
++      break;
++    default:
++      break;
+     }
+   }
+ 
+@@ -489,10 +712,16 @@ export default class networkComponent extends React.Component {
+     const change = {};
+     change[name] = e.target.value;
+ 
+-    change.stationContent = {};
+-    change.stationContent.key = '';
+-    change.stationContent.ssid = this.state.wifiList[e.target.value - 1].ssid;
+-    change.stationContent.encryption = this.state.wifiList[e.target.value - 1].encryption.enabled;
++    change.staContent = {};
++    change.staContent.key = '';
++    change.staContent.ssid = this.state.wifiList[e.target.value - 1].ssid;
++    change.staContent.encryption = this.state.wifiList[e.target.value - 1].encryption.enabled;
++    change.apstaContent = {};
++    change.apstaContent.key = '';
++    change.apstaContent.ssid = this.state.wifiList[e.target.value - 1].ssid;
++    change.apstaContent.encryption = this.state.wifiList[e.target.value - 1].encryption.enabled;
++    change.apstaContent.repeaterSsid = this.state.apstaContent.repeaterSsid;
++    change.apstaContent.repeaterKey = this.state.apstaContent.repeaterKey;
+     this.setState(change);
+   }
+ 
+@@ -501,12 +730,12 @@ export default class networkComponent extends React.Component {
+     if (this.state.notPassPassword) {
+       return false;
+     }
+-    return AppActions.setWifi(this.state.mode, this.state[ this.state.mode + 'Content'].ssid, this.state[ this.state.mode + 'Content'].key, window.session)
++    return AppActions.setWifi(this.state.mode, this.state[ this.state.mode + 'Content'], window.session)
++    .then(() => {
++      return AppActions.setWifiMode(this.state.mode, window.session);
++    })
+     .then(() => {
+       return AppActions.commitAndReboot(window.session)
+-      .then(() => {
+-        return;
+-      })
+       .catch((err) => {
+         if (err === 'no data') {
+           return false;
+diff --git a/app/lib/components/sysinfo.jsx b/app/lib/components/sysinfo.jsx
+index 294c2a5..5b1ae8f 100644
+--- a/app/lib/components/sysinfo.jsx
++++ b/app/lib/components/sysinfo.jsx
+@@ -114,12 +114,20 @@ export default class sysinfoComponent extends React.Component {
+       this.state.firmwareVersion = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].firmware_version;
+       this.state.macaddr = this.props.boardInfo.network.lan.macaddr;
+       this.state.wifiMACName = this.props.boardInfo.network.lan.macaddr.split(':')[3] + this.props.boardInfo.network.lan.macaddr.split(':')[4] + this.props.boardInfo.network.lan.macaddr.split(':')[5];
+-      if (this.props.boardInfo.wifi.sta.disabled === '1') {
+-        this.state.mode = 'ap';
++      this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
++
++      switch (this.state.mode) {
++      case 'ap':
+         this.state.currentIp = this.props.boardInfo.lan['ipv4-address'][0].address;
+-      } else {
+-        this.state.mode = 'station';
++        break;
++      case 'sta':
++        this.state.currentIp = this.props.boardInfo.wan['ipv4-address'][0].address;
++        break;
++      case 'apsta':
+         this.state.currentIp = this.props.boardInfo.wan['ipv4-address'][0].address;
++        break;
++      default:
++        break;
+       }
+     }
+ 
+diff --git a/app/lib/util/rpcAPI.js b/app/lib/util/rpcAPI.js
+index ca02ca0..ba64369 100644
+--- a/app/lib/util/rpcAPI.js
++++ b/app/lib/util/rpcAPI.js
+@@ -85,30 +85,93 @@ const rpcAPI = {
+     return this.request(config);
+   },
+   // ====== login end ========
+-  changeWifiMode: function(disabled, session) {
++  scanWifi: function(session) {
++    const config = {
++      jsonrpc: '2.0',
++      id: id++,
++      method: 'call',
++      params: [session, 'iwinfo', 'scan', { device: 'ra0' }],
++    };
++
++    return this.request(config);
++  },
++  setWifiIgnoreConfig: function(ignore, session) {
+     const config = {
+       jsonrpc: '2.0',
+       id: id++,
+       method: 'call',
+-      params: [ session, 'uci', 'set',
++      params: [
++        session,
++        'uci',
++        'set',
+         {
+-          config: 'wireless',
+-          section: 'sta',
++          config: 'dhcp',
++          section: 'lan',
+           values: {
+-            disabled: disabled,
++            ignore: ignore,
+           },
+         },
+       ],
+     };
+-
+     return this.request(config);
+   },
+-  scanWifi: function(session) {
++  setWifiProtoConfig: function(proto, session) {
+     const config = {
+       jsonrpc: '2.0',
+       id: id++,
+       method: 'call',
+-      params: [session, 'iwinfo', 'scan', { device: 'ra0' }],
++      params: [
++        session,
++        'uci',
++        'set',
++        {
++          config: 'network',
++          section: 'lan',
++          values: {
++            proto: proto,
++          },
++        },
++      ],
++    };
++    return this.request(config);
++  },
++  setWifiNetworkConfig: function(network, session) {
++    const config = {
++      jsonrpc: '2.0',
++      id: id++,
++      method: 'call',
++      params: [
++        session,
++        'uci',
++        'set',
++        {
++          config: 'network',
++          section: 'lan',
++          values: {
++            network: network,
++          },
++        },
++      ],
++    };
++    return this.request(config);
++  },
++  setWifiMode: function(mode, session) {
++    const config = {
++      jsonrpc: '2.0',
++      id: id++,
++      method: 'call',
++      params: [
++        session,
++        'uci',
++        'set',
++        {
++          config: 'wireless',
++          section: 'radio0',
++          values: {
++            linkit_mode: mode,
++          },
++        },
++      ],
+     };
+ 
+     return this.request(config);
+@@ -141,6 +204,21 @@ const rpcAPI = {
+ 
+     return this.request(config);
+   },
++  uciCommit: function(uciConfig, session) {
++    const config = {
++      jsonrpc: '2.0',
++      id: id++,
++      method: 'call',
++      params: [
++        session,
++        'uci',
++        'commit', {
++          config: uciConfig,
++        },
++      ],
++    };
++    return this.request(config);
++  },
+   commitWifi: function(session) {
+     const config = {
+       jsonrpc: '2.0',
+-- 
+2.7.4
+

@@ -135,6 +135,27 @@ const rpcAPI = {
     };
     return this.request(config);
   },
+  setLANProtoConfig: function(proto, ipaddr, session) {
+    const config = {
+      jsonrpc: '2.0',
+      id: id++,
+      method: 'call',
+      params: [
+        session,
+        'uci',
+        'set',
+        {
+          config: 'network',
+          section: 'lan',
+          values: {
+            proto: proto,
+            ipaddr: ipaddr,
+          },
+        },
+      ],
+    };
+    return this.request(config);
+  },
   setWifiNetworkConfig: function(network, session) {
     const config = {
       jsonrpc: '2.0',
