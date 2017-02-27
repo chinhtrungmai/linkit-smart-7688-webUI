@@ -185,7 +185,7 @@ export default class sysinfoComponent extends React.Component {
         <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
         <p style={ styles.panelContent }>{ this.state.stringMode }</p>
         <h3 style={ styles.panelTitle }>{ __('IP') }</h3>
-        <p style={ styles.panelContent }>{ this.state.firmwareVersion }</p>
+        <p style={ styles.panelContent }>{ this.state.currentIp }</p>
       </div>
     );
 
@@ -200,7 +200,7 @@ export default class sysinfoComponent extends React.Component {
 
     let lanBlock = (
 	      <div style={ styles.content } key="lanBlock">
-	        <h3 style={styles.h3}>{ __('LAN/WAN information') }</h3>
+	        <h3 style={styles.h3}>{ __('LAN information') }</h3>
 	        <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
 	        <p style={ styles.panelContent }>{ this.state.proto }</p>
 	        { elem }

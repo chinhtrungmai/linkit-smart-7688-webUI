@@ -44,6 +44,8 @@ const styles = {
   img: {
     width: '500px',
     height: '73px',
+    marginBottom: '10px',
+    textAlign: 'center',
   },
 
   block: {

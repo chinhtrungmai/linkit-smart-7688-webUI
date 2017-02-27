@@ -123,7 +123,6 @@ export default class networkComponent extends React.Component {
     this._onRadioButtonClick = ::this._onRadioButtonClick;
     this._handleSelectValueChange = ::this._handleSelectValueChange;
     this._handleSettingMode = ::this._handleSettingMode;
-    this._handleSettingProto = ::this._handleSettingProto;
     this.selectWifiList = false;
     this._returnToIndex = ::this._returnToIndex;
     this._cancelErrorMsgDialog = ::this._cancelErrorMsgDialog;
@@ -165,7 +164,6 @@ export default class networkComponent extends React.Component {
     let textType = 'password';
     let repeaterTextType = 'password';
     let errorText;
-    let boardImg = icon7688Duo;
     let showPasswordStyle = {
       width: '100%',
       marginBottom: '44px',
@@ -226,6 +224,7 @@ export default class networkComponent extends React.Component {
               this.setState({
                 staticContent: {
                   ipaddr: e.target.value,
+                  gateway: this.state.staticContent.gateway,
                 },
               });
             }
@@ -246,6 +245,7 @@ export default class networkComponent extends React.Component {
             (e) => {
               this.setState({
                 staticContent: {
+                  ipaddr: this.state.staticContent.ipaddr,
                   gateway: e.target.value,
                 },
               });
@@ -255,7 +255,7 @@ export default class networkComponent extends React.Component {
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
-              { __('Gate address') } <b style={{ color: 'red' }}>*</b>
+              { __('Gateway address') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
         </div>
@@ -585,10 +585,6 @@ export default class networkComponent extends React.Component {
       break;
     }
 
-    if (this.state.boardModel === 'MediaTek LinkIt Smart 7688') {
-      boardImg = icon7688;
-    }
-
     return (
       <div>
         <Card>
@@ -615,7 +611,6 @@ export default class networkComponent extends React.Component {
               color: '#999A94',
               lineHeight: '18.54px',
             }}>{ __('Note: Please make sure your host computer is in the ')} { this.state[ this.state.mode + 'Content'].ssid } {__('network. You can’t access this page if it’s in a different network.')}</p>
-            <img src={ boardImg } style={{ width: '350px' }} />
             </div>
           </Dialog>
           <Dialog
@@ -658,7 +653,7 @@ export default class networkComponent extends React.Component {
                 }}/>
             </RadioButtonGroup>
             { elem }
-            <h3>{__('LAN/WAN setting')}</h3>
+            <h3>{__('LAN setting')}</h3>
             <RadioButtonGroup name="proto" defaultSelected={ this.state.proto } style={{ display: 'flex', paddingTop: '20px' }} >
               <RadioButton
                 value="dhcp"
@@ -822,33 +817,6 @@ export default class networkComponent extends React.Component {
     .then(() => {
       return AppActions.setWifiMode(this.state.mode, window.session);
     })
-    .then(() => {
-      return AppActions.commitAndReboot(window.session)
-      .catch((err) => {
-        if (err === 'no data') {
-          return false;
-        }
-        return err;
-      });
-    })
-    .then(() => {
-      return this$._returnToIndex(__('Configuration saved. You can sign in to the console after your device has restarted.'));
-    })
-    .catch((err) => {
-      if (err === 'Access denied') {
-        this$.setState({
-          errorMsgTitle: __('Access denied'),
-          errorMsg: __('Your token was expired, please sign in again.'),
-        });
-        return this$.refs.errorMsg.show();
-      }
-      alert('[' + err + '] Please try again!');
-    });
-  }
-
-  _handleSettingProto() {
-    const this$ = this;
-    return AppActions.setLAN(this.state.proto, this.state[ this.state.proto + 'Content'], window.session)
     .then(() => {
       return AppActions.commitAndReboot(window.session)
       .catch((err) => {
