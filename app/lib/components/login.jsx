@@ -1,6 +1,6 @@
 import { default as React, PropTypes } from 'react';
 import Radium from 'radium';
-import Logo from '../../img/mediatek.png';
+import Logo from '../../img/hc_topbar.png';
 import mui from 'material-ui';
 import AppActions from '../actions/appActions';
 
@@ -42,7 +42,8 @@ const styles = {
   },
 
   img: {
-    width: '200px',
+    width: '500px',
+    height: '73px',
   },
 
   block: {
@@ -155,11 +156,6 @@ export default class loginComponent extends React.Component {
             alignItems: 'center',
           }}>
             <img src={ Logo } style={ styles.img } />
-            <p style={{
-              lineHeight: '22px',
-              marginTop: '40px',
-              fontFamily: 'RionaSansLight,Arial,Helvetica,sans-serif',
-            }}><span style={{fontFamily: 'RionaSansLight,Arial,Helvetica,sans-serif'}}>{__('Welcome to')}</span> <b style={{ fontFamily: 'RionaSansMedium,Arial,Helvetica,sans-serif' }}>LinkIt Smart 7688</b>.</p>
             <h3 style={ styles.panelTitle }>{__('Account')}</h3>
             <p style={ styles.panelContent }>root(default)</p>
             <TextField

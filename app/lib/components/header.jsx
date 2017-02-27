@@ -1,7 +1,7 @@
 import { default as React } from 'react';
 import Radium from 'radium';
 import mui from 'material-ui';
-import Logo from '../../img/mediatek.png';
+import Logo from '../../img/hc_topbar.png';
 import AppActions from '../actions/appActions';
 
 const {
@@ -17,8 +17,9 @@ const styles = {
   },
 
   img: {
-    width: '130px',
-    marginTop: '15px',
+    width: '350px',
+    height: '52px',
+    marginTop: '5px',
   },
 
   header: {
@@ -82,8 +83,6 @@ export default class loginComponent extends React.Component {
   render() {
     const menuItems = [
       { payload: '1', text: 'English' },
-      { payload: '2', text: '繁體中文' },
-      { payload: '3', text: '简体中文' },
     ];
 
     let defaultRouter = '';

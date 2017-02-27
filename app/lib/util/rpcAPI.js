@@ -135,7 +135,7 @@ const rpcAPI = {
     };
     return this.request(config);
   },
-  setLANProtoConfig: function(proto, ipaddr, session) {
+  setLANProtoConfig: function(proto, ipaddr, gateway, session) {
     const config = {
       jsonrpc: '2.0',
       id: id++,
@@ -150,6 +150,7 @@ const rpcAPI = {
           values: {
             proto: proto,
             ipaddr: ipaddr,
+            gateway: gateway,
           },
         },
       ],

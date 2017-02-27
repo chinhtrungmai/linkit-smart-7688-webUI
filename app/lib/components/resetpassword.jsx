@@ -1,6 +1,6 @@
 import { default as React, PropTypes } from 'react';
 import Radium from 'radium';
-import Logo from '../../img/mediatek.png';
+import Logo from '../../img/hc_topbar.png';
 import mui from 'material-ui';
 import appAction from '../actions/appActions';
 import AppDispatcher from '../dispatcher/appDispatcher';

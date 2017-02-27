@@ -72,7 +72,7 @@ const appActions = {
     });
   },
   setLAN: (mode, content, session) => {
-    return rpc.setLANProtoConfig(mode, content.ipaddr, session);
+    return rpc.setLANProtoConfig(mode, content.ipaddr, content.gateway, session);
   },
   scanWifi: (session) => {
     return rpc.scanWifi(session);

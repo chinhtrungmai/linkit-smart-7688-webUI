@@ -3,6 +3,7 @@ import Radium from 'radium';
 import mui from 'material-ui';
 import Sysinfo from './sysinfo.jsx';
 import Network from './network.jsx';
+import Administration from './administration.jsx';
 import AppActions from '../actions/appActions';
 
 const { Tabs, Tab } = mui;
@@ -66,6 +67,7 @@ export default class contentComponent extends React.Component {
     super(props);
     this._handleTabsChangeNetWork = ::this._handleTabsChangeNetWork;
     this._handleTabsChangeSYS = ::this._handleTabsChangeSYS;
+    this._handleTabsChangeAdmin = ::this._handleTabsChangeAdmin;
     this.state = {
       tabsValue: 'sysinfo',
       boardModel: '',
@@ -90,7 +92,6 @@ export default class contentComponent extends React.Component {
     return (
       <div key="mainBlock" style={ styles.block }>
         <header style={ styles.header }>
-          <p style={ styles.welcomeTitle } key="welcome">{ __('Welcome to') } <b>{ this.state.boardModel }</b></p>
           <p style={[ styles.welcomeTitle, styles.welcomeTitleLine ]} key="advanced">
             {
               __('For advanced network configuration, go to ')
@@ -108,7 +109,7 @@ export default class contentComponent extends React.Component {
           }}
           style={ styles.content }>
           <Tab
-            label={ __('System information') }
+            label={ __('Information') }
             value="sysinfo"
             onClick={ ::this._handleTabsChangeSYS }>
             <Sysinfo boardInfo={ this.props.boardInfo } />
@@ -118,6 +119,12 @@ export default class contentComponent extends React.Component {
             value="network"
             onClick={ ::this._handleTabsChangeNetWork }>
             <Network boardInfo={ this.props.boardInfo } />
+          </Tab>
+          <Tab
+            label={ __('Administration') }
+            value="administration"
+            onClick={ ::this._handleTabsChangeAdmin }>
+            <Administration boardInfo={ this.props.boardInfo } />
           </Tab>
         </Tabs>
       </div>
@@ -130,6 +137,10 @@ export default class contentComponent extends React.Component {
 
   _handleTabsChangeSYS() {
     this.setState({ tabsValue: 'sysinfo' });
+  }
+
+  _handleTabsChangeAdmin() {
+    this.setState({ tabsValue: 'administration' });
   }
 }
 
