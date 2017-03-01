@@ -43,12 +43,12 @@ const appActions = {
   setWifiMode: (mode, session) => {
     let network = 'lan';
     let ignore = 1;
-    let proto = 'dhcp';
+    // let proto = 'dhcp';
 
     if (mode !== 'apsta') {
       network = 'wan';
       ignore = 0;
-      proto = 'static';
+      // proto = 'static';
     }
 
     return rpc.setWifiMode(mode, session)
@@ -64,15 +64,21 @@ const appActions = {
     .then(() => {
       return rpc.uciCommit('dhcp', session);
     })
-    .then(() => {
-      return rpc.setWifiProtoConfig(proto, session);
-    })
+    // .then(() => {
+    //   return rpc.setWifiProtoConfig(proto, session);
+    // })
     .then(() => {
       return rpc.uciCommit('network', session);
     });
   },
   setLAN: (mode, content, session) => {
     return rpc.setLANProtoConfig(mode, content.ipaddr, content.gateway, session)
+    .then(() => {
+      return rpc.uciCommit('network', session);
+    });
+  },
+  setDHCP: (mode, content, session) => {
+    return rpc.setWifiProtoConfig(proto, session)
     .then(() => {
       return rpc.uciCommit('network', session);
     });

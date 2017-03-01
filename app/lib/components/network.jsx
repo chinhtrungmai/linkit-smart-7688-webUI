@@ -812,10 +812,12 @@ export default class networkComponent extends React.Component {
     if (this.state.notPassPassword) {
       return false;
     }
-    AppActions.setWifi(this.state.mode, this.state[ this.state.mode + 'Content'], window.session)
-    return AppActions.setLAN(this.state.proto, this.state[ this.state.proto + 'Content'], window.session)
+    return AppActions.setWifi(this.state.mode, this.state[ this.state.mode + 'Content'], window.session)
     .then(() => {
       return AppActions.setWifiMode(this.state.mode, window.session);
+    })
+    .then(() => {
+      return AppActions.setLAN(this.state.proto, this.state[ this.state.proto + 'Content'], window.session)
     })
     .then(() => {
       return AppActions.commitAndReboot(window.session)
