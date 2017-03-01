@@ -290,7 +290,7 @@ export default class sysinfoComponent extends React.Component {
         <h3 style={ styles.h3 }>{ __('Platform information') }</h3>
         <h3 style={ styles.panelTitle }>{ __('Device name') }</h3>
         <p style={ styles.panelContent }>{ this.state.deviceName }</p>
-        <h3 style={ [styles.h3Top, { marginTop: '-15px' }] }>{ __('Account information') }</h3>
+        <h3 style={ styles.h3Top }>{ __('Account information') }</h3>
         <h3 style={ styles.panelTitle }>{ __('Account') }</h3>
         <p style={ styles.panelContent }>root(default)</p>
         <h3 style={ styles.panelTitle }>{ __('Password') } <b style={{ color: 'red' }}>*</b></h3>
@@ -331,7 +331,7 @@ export default class sysinfoComponent extends React.Component {
               }
             }
             floatingLabelText={ __('Device name') } />
-          <h3 style={ [styles.h3Top, { marginTop: '-15px' }] }>{ __('Account information') }</h3>
+          <h3 style={ styles.h3Top }>{ __('Account information') }</h3>
 
           <h3 style={ styles.panelTitle }>{ __('Account') }</h3>
           <p style={ styles.panelContent }>root(default)</p>
