@@ -1,0 +1,19 @@
+[8006:8006:0302/000128.709823:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.710701:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.711312:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.711908:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.712197:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.712515:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.714493:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.720742:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.721298:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.721521:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[8006:8006:0302/000128.752769:ERROR:zygote_communication_linux.cc(292)] Failed to send GetTerminationStatus message to zygote
+[9581:9581:0302/000425.972654:ERROR:gles2_cmd_decoder.cc(16945)] [.DisplayCompositor-0x25743cf4c800]GL ERROR :GL_INVALID_OPERATION : glCreateAndConsumeTextureCHROMIUM: invalid mailbox name
+[9581:9581:0302/000425.972709:ERROR:gles2_cmd_decoder.cc(9408)] [.DisplayCompositor-0x25743cf4c800]RENDER WARNING: texture bound to texture unit 0 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
+[1:1:0302/000838.695039:ERROR:KeyboardEventManager.cpp(424)] Not implemented reached in static bool blink::KeyboardEventManager::currentCapsLockState()
+[9513:9513:0302/001231.439129:ERROR:navigation_entry_screenshot_manager.cc(141)] Invalid entry with unique id: 16
+[9513:9513:0302/001249.281961:ERROR:navigation_entry_screenshot_manager.cc(141)] Invalid entry with unique id: 30
+[9513:9513:0302/001251.696954:ERROR:navigation_entry_screenshot_manager.cc(141)] Invalid entry with unique id: 32
+[9513:9513:0302/001252.918705:ERROR:navigation_entry_screenshot_manager.cc(141)] Invalid entry with unique id: 33
+[1:1:0302/001405.962898:ERROR:KeyboardEventManager.cpp(424)] Not implemented reached in static bool blink::KeyboardEventManager::currentCapsLockState()
