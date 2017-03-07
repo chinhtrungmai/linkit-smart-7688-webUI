@@ -314,16 +314,16 @@ export default class networkComponent extends React.Component {
               this.setState({
                 apContent: {
                 	wanIpaddr: e.target.value,
-                	ssid: this.state.staContent.ssid,
-			      	key: this.state.staContent.key,
-			      	encryption: this.state.staContent.encryption,
-			        wanProto: this.state.staContent.wanProto,
-			        wanNetmask: this.state.staContent.wanNetmask,
-			        wanGateway: this.state.staContent.wanGateway,
-			        wanDns: this.state.staContent.wanDns,
-			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
-			        wanIfname: this.state.staContent.wanIfname,
+                	ssid: this.state.apContent.ssid,
+			      	key: this.state.apContent.key,
+			      	encryption: this.state.apContent.encryption,
+			        wanProto: this.state.apContent.wanProto,
+			        wanNetmask: this.state.apContent.wanNetmask,
+			        wanGateway: this.state.apContent.wanGateway,
+			        wanDns: this.state.apContent.wanDns,
+			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+			        wanIfname: this.state.apContent.wanIfname,
 	             },
               });
             }
