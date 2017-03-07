@@ -479,7 +479,7 @@ export default class networkComponent extends React.Component {
 	if(this.state.mode === 'ap' && (this.state.apContent.wanProto == 'static' || this.state.apContent.wanProto == 'dhcp')) {
     	elemNET3 = (
       	<div>
-        <TextField
+          <TextField
           hintText={__('Input netmask, ex: 255.255.255.0')}
           type="text"
           value={ this.state.apContent.wanNetmask }
@@ -488,17 +488,17 @@ export default class networkComponent extends React.Component {
             (e) => {
               this.setState({
                 apContent: {
-                  wanNetmask: e.target.value,
-                  ssid: this.state.apContent.ssid,
-	              key: this.state.apContent.key,
-	              encryption: this.state.apContent.encryption,
-	              wanProto: this.state.apContent.wanProto,
-	              wanIpaddr: this.state.apContent.wanIpaddr,
-	              wanGateway: this.state.apContent.wanGateway,
-	              wanDns: this.state.apContent.wanDns,
-	              wan_orig_ifname: this.state.apContent.wan_orig_ifname,
-	              wan_orig_bridge: this.state.apContent.wan_orig_bridge,
-	              wanIfname: this.state.apContent.wanIfname,
+                	wanNetmask: e.target.value,
+                	ssid: this.state.apContent.ssid,
+			      	key: this.state.apContent.key,
+			      	encryption: this.state.apContent.encryption,
+			        wanProto: this.state.apContent.wanProto,
+			        wanIpaddr: this.state.apContent.wanIpaddr,
+			        wanGateway: this.state.apContent.wanGateway,
+			        wanDns: this.state.apContent.wanDns,
+			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+			        wanIfname: this.state.apContent.wanIfname,
                 },
               });
             }
