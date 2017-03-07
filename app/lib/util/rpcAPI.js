@@ -204,30 +204,6 @@ const rpcAPI = {
 
     return this.request(config);
   },
-  setApWAN: function(wanProto, wan_orig_ifname, wan_orig_bridge, wanIfname, session) {
-    const config = {
-      jsonrpc: '2.0',
-      id: id++,
-      method: 'call',
-      params: [
-        session,
-        'uci',
-        'set',
-        {
-          config: 'network',
-          section: 'wan',
-          values: {
-            proto: wanProto,
-            _orig_ifname: wan_orig_ifname,
-            _orig_bridge: wan_orig_bridge,
-            ifname: wanIfname,
-          },
-        },
-      ],
-    };
-
-    return this.request(config);
-  },
   delApLAN: function(session) {
     const config = {
       jsonrpc: '2.0',
@@ -249,35 +225,7 @@ const rpcAPI = {
 
     return this.request(config);
   },
-  setApLAN: function(lanProto, lanIpaddr, lanNetmask, lanDns, lanForce_link, lanType, lan_orig_ifname, lan_orig_bridge, session) {
-    const config = {
-      jsonrpc: '2.0',
-      id: id++,
-      method: 'call',
-      params: [
-        session,
-        'uci',
-        'set',
-        {
-          config: 'network',
-          section: 'lan',
-          values: {
-            proto: lanProto,
-            ipaddr: lanIpaddr,
-            netmask: lanNetmask,
-            dns: lanDns,
-            force_link: lanForce_link,
-            type: lanType,
-            _orig_ifname: lan_orig_ifname,
-            _orig_bridge: lan_orig_bridge,
-          },
-        },
-      ],
-    };
-
-    return this.request(config);
-  },
-  setStaWAN: function(wanProto, wanIpaddr, wanNetmask, wanGateway, wanDns, wan_orig_ifname, wan_orig_bridge, wanIfname, session) {
+  setWAN: function(wanProto, wanIpaddr, wanNetmask, wanGateway, wanDns, wan_orig_ifname, wan_orig_bridge, wanIfname, session) {
     const config = {
       jsonrpc: '2.0',
       id: id++,
@@ -298,35 +246,6 @@ const rpcAPI = {
             _orig_ifname: wan_orig_ifname,
             _orig_bridge: wan_orig_bridge,
             ifname: wanIfname,
-          },
-        },
-      ],
-    };
-
-    return this.request(config);
-  },
-  setStaLAN: function(lanProto, lanIpaddr, lanNetmask, lanDns, lanForce_link, lanType, lan_orig_ifname, lan_orig_bridge, lanIfname, session) {
-    const config = {
-      jsonrpc: '2.0',
-      id: id++,
-      method: 'call',
-      params: [
-        session,
-        'uci',
-        'set',
-        {
-          config: 'network',
-          section: 'lan',
-          values: {
-            proto: lanProto,
-            ipaddr: lanIpaddr,
-            netmask: lanNetmask,
-            dns: lanDns,
-            force_link: lanForce_link,
-            type: lanType,
-            _orig_ifname: lan_orig_ifname,
-            _orig_bridge: lan_orig_bridge,
-            ifname: lanIfname,
           },
         },
       ],

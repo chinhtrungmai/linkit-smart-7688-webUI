@@ -33,22 +33,16 @@ const appActions = {
   },
   setNet: (mode, content, session) => {
     if (mode === 'ap') {
-      return rpc.setApWAN(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
-      then(() => {
+      return rpc.setWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, 'eth0', session)
+      .then(() => {
         rpc.delApLAN(session);
       })
       .then(() => {
-        return rpc.setApLAN(content.lanProto, content.lanIpaddr, content.lanNetmask, content.lanDns, content.lanForce_link, content.lanType, content.lan_orig_ifname, content.lan_orig_bridge, session);
-      })
-      then(() => {
         return rpc.uciCommit('network', session);
       });
     } else if (mode === 'sta') {
-      return rpc.setStaWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
+      return rpc.setWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
       .then(() => {
-        return rpc.setStaLAN(content.lanProto, content.lanIpaddr, content.lanNetmask, content.lanDns, content.lanForce_link, content.lanType, content.lan_orig_ifname, content.lan_orig_bridge, content.lanIfname, session);
-      })
-      then(() => {
         return rpc.uciCommit('network', session);
       });
     }

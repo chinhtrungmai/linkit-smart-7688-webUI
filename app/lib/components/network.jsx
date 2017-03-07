@@ -59,36 +59,28 @@ export default class networkComponent extends React.Component {
         ssid: this.props.boardInfo.wifi.ap.ssid || '',
         key: '',
         encryption: false,
-        lanProto: this.props.boardInfo.network.lan.proto,
-        lanIpaddr: this.props.boardInfo.network.lan.ipaddr,
-        lanNetmask: this.props.boardInfo.network.lan.netmask,
-        lanDns: this.props.boardInfo.network.lan.dns,
-        lanForce_link: '1',
-        lanType: 'bridge',
-        lan_orig_ifname: 'eth0 ra0',
-		lan_orig_bridge: 'true',
 		wanProto: this.props.boardInfo.network.wan.proto,
-     	wan_orig_ifname: 'apcli0',
-     	wan_orig_bridge: 'false',
-     	wanIfname: 'eth0',
+        wanIpaddr: this.props.boardInfo.network.wan.ipaddr,
+        wanNetmask: this.props.boardInfo.network.wan.netmask,
+        wanGateway: this.props.boardInfo.network.wan.gateway,
+        wanDns: this.props.boardInfo.network.wan.dns,
+        wan_orig_ifname: 'apcli0',
+        wan_orig_bridge: 'false',
+        wanIfname: 'apcli0',
       };
     } else {
       this.state.apContent = {
         ssid: this.props.boardInfo.wifi.ap.ssid || '',
         key: this.props.boardInfo.wifi.ap.key || '',
         encryption: true,
-        lanProto: this.props.boardInfo.network.lan.proto,
-        lanIpaddr: this.props.boardInfo.network.lan.ipaddr,
-        lanNetmask: this.props.boardInfo.network.lan.netmask,
-        lanDns: this.props.boardInfo.network.lan.dns,
-        lanForce_link: '1',
-        lanType: 'bridge',
-        lan_orig_ifname: 'eth0 ra0',
-		lan_orig_bridge: 'true',
 		wanProto: this.props.boardInfo.network.wan.proto,
-     	wan_orig_ifname: 'apcli0',
-     	wan_orig_bridge: 'false',
-     	wanIfname: 'eth0',
+        wanIpaddr: this.props.boardInfo.network.wan.ipaddr,
+        wanNetmask: this.props.boardInfo.network.wan.netmask,
+        wanGateway: this.props.boardInfo.network.wan.gateway,
+        wanDns: this.props.boardInfo.network.wan.dns,
+        wan_orig_ifname: 'apcli0',
+        wan_orig_bridge: 'false',
+        wanIfname: 'apcli0',
       };
     }
 
@@ -101,15 +93,6 @@ export default class networkComponent extends React.Component {
       	ssid: this.props.boardInfo.wifi.sta.ssid || '',
       	key: this.props.boardInfo.wifi.sta.key || '',
       	encryption: this.props.boardInfo.wifi.sta.encryption.enabled || false,
-      	lanProto: this.props.boardInfo.network.lan.proto,
-      	lanIpaddr: this.props.boardInfo.network.lan.ipaddr,
-      	lanNetmask: this.props.boardInfo.network.lan.netmask,
-        lanDns: this.props.boardInfo.network.lan.dns,
-        lanForce_link: '1',
-        lanType: 'bridge',
-        lan_orig_ifname: 'eth0 ra0',
-		lan_orig_bridge: 'true',
-		lanIfname: 'eth0 ra0',
 		wanProto: this.props.boardInfo.network.wan.proto,
         wanIpaddr: this.props.boardInfo.network.wan.ipaddr,
         wanNetmask: this.props.boardInfo.network.wan.netmask,
@@ -201,6 +184,8 @@ export default class networkComponent extends React.Component {
     };
     let elemWIFI;
     let elemNET;
+    let elemNET2;
+    let elemNET3;
     let staPassword;
 
     if (this.state.showPassword) {
@@ -243,152 +228,32 @@ export default class networkComponent extends React.Component {
     ];
 
     if(this.state.mode === 'ap') {
-    	elemNET = (
-	        <div>
-	          <TextField
-	          type="text"
-	          value={ this.state.apContent.wanProto }
-	          style={{ width: '100%' }}
-	          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-	          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-	          floatingLabelText={
-	            <div>
-	              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
-	            </div>
-	          } />
-
-	        <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '20px', marginBottom: '0px' }}></div>
-            <h3 style={{
-                textAlign: 'left',
-                textDecoration: 'none',
-                fontSize: '12px',
-                marginBottom: '-5px',
-              }}>{__('LAN')}</h3>
-		      <TextField
-	          value={ this.state.apContent.lanProto }
-	          style={{ width: '100%' }}
-	          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-	          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-	          floatingLabelText={
-	            <div>
-	              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
-	            </div>
-	          } />
-
-	          <TextField
-	          hintText={__('Input IP, ex: 192.168.x.xxx')}
-	          type="text"
-	          value={ this.state.apContent.lanIpaddr }
-	          style={{ width: '100%' }}
-	          onChange={
-	            (e) => {
-	              this.setState({
-	                apContent: {
-	                	lanIpaddr: e.target.value,
-	                  	ssid: this.state.apContent.ssid,
-				        key: this.state.apContent.key,
-				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanNetmask: this.state.apContent.lanNetmask,
-				        lanDns: this.state.apContent.lanDns,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
-				      	wanProto: this.state.apContent.wanProto,
-				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
-				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
-				     	wanIfname: this.state.apContent.wanIfname,
-	                },
-	              });
-	            }
-	          }
-	          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-	          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-	          floatingLabelText={
-	            <div>
-	              { __('IP address') } <b style={{ color: 'red' }}>*</b>
-	            </div>
-	          } />
-	          <TextField
-	          hintText={__('Input netmask, ex: 255.255.255.0')}
-	          type="text"
-	          value={ this.state.apContent.lanNetmask }
-	          style={{ width: '100%' }}
-	          onChange={
-	            (e) => {
-	              this.setState({
-	                apContent: {
-	                	lanNetmask: e.target.value,
-	                  	ssid: this.state.apContent.ssid,
-				        key: this.state.apContent.key,
-				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanIpaddr: this.state.apContent.lanIpaddr,
-				        lanDns: this.state.apContent.lanDns,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
-				      	wanProto: this.state.apContent.wanProto,
-				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
-				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
-				     	wanIfname: this.state.apContent.wanIfname,
-	                },
-	              });
-	            }
-	          }
-	          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-	          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-	          floatingLabelText={
-	            <div>
-	              { __('Netmask') } <b style={{ color: 'red' }}>*</b>
-	            </div>
-	          } />
-	          <TextField
-	          hintText={__('Input DNS, ex: 8.8.8.8')}
-	          type="text"
-	          value={ this.state.apContent.lanDns }
-	          style={{ width: '100%' }}
-	          onChange={
-	            (e) => {
-	              this.setState({
-	                apContent: {
-	                	lanDns: e.target.value,
-	                  	ssid: this.state.apContent.ssid,
-				        key: this.state.apContent.key,
-				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanIpaddr: this.state.apContent.lanIpaddr,
-				        lanNetmask: this.state.apContent.lanNetmask,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
-					    wanProto: this.state.apContent.wanProto,
-				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
-				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
-				     	wanIfname: this.state.apContent.wanIfname,
-	                },
-	              });
-	            }
-	          }
-	          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-	          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-	          floatingLabelText={
-	            <div>
-	              { __('DNS server') } <b style={{ color: 'red' }}>*</b>
-	            </div>
-	          } />
-	        </div>
-    	);
-    } else if(this.state.mode === 'sta') {
 	   	elemNET = (
         <div>
           <TextField
+          hintText={__('Choose static or dhcp')}
           type="text"
-          value={ this.state.staContent.wanProto }
+          value={ this.state.apContent.wanProto }
           style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                	wanProto: e.target.value,
+                	ssid: this.state.apContent.ssid,
+			      	key: this.state.apContent.key,
+			      	encryption: this.state.apContent.encryption,
+			        wanIpaddr: this.state.apContent.wanIpaddr,
+			        wanNetmask: this.state.apContent.wanNetmask,
+			        wanGateway: this.state.apContent.wanGateway,
+			        wanDns: this.state.apContent.wanDns,
+			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+			        wanIfname: this.state.apContent.wanIfname,
+                },
+              });
+            }
+          }
           underlineFocusStyle={{ borderColor: Colors.amber700 }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
@@ -396,6 +261,86 @@ export default class networkComponent extends React.Component {
               { __('IP mode') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
+        </div>
+    	);
+    } else if(this.state.mode === 'sta') {
+	   	elemNET = (
+        <div>
+          <TextField
+          hintText={__('Choose static or dhcp')}
+          type="text"
+          value={ this.state.staContent.wanProto }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                	wanProto: e.target.value,
+                	ssid: this.state.staContent.ssid,
+			      	key: this.state.staContent.key,
+			      	encryption: this.state.staContent.encryption,
+			        wanIpaddr: this.state.staContent.wanIpaddr,
+			        wanNetmask: this.state.staContent.wanNetmask,
+			        wanGateway: this.state.staContent.wanGateway,
+			        wanDns: this.state.staContent.wanDns,
+			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+			        wanIfname: this.state.staContent.wanIfname,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+        </div>
+    	);
+    }
+
+    if(this.state.apContent.wanProto == 'static') {
+		elemNET2 = (
+	    <div>
+          <TextField
+          hintText={__('Input IP, ex: 192.168.x.xxx')}
+          type="text"
+          value={ this.state.apContent.wanIpaddr }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                	wanIpaddr: e.target.value,
+                	ssid: this.state.staContent.ssid,
+			      	key: this.state.staContent.key,
+			      	encryption: this.state.staContent.encryption,
+			        wanProto: this.state.staContent.wanProto,
+			        wanNetmask: this.state.staContent.wanNetmask,
+			        wanGateway: this.state.staContent.wanGateway,
+			        wanDns: this.state.staContent.wanDns,
+			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+			        wanIfname: this.state.staContent.wanIfname,
+	             },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('IP address') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+	    </div>
+    	);
+    }
+    if(this.state.staContent.wanProto == 'static') {
+    	elemNET2 = (
+	    <div>
           <TextField
           hintText={__('Input IP, ex: 192.168.x.xxx')}
           type="text"
@@ -409,14 +354,6 @@ export default class networkComponent extends React.Component {
                 	ssid: this.state.staContent.ssid,
 			      	key: this.state.staContent.key,
 			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			      	lanNetmask: this.state.staContent.lanNetmask,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
 			        wanProto: this.state.staContent.wanProto,
 			        wanNetmask: this.state.staContent.wanNetmask,
 			        wanGateway: this.state.staContent.wanGateway,
@@ -435,6 +372,13 @@ export default class networkComponent extends React.Component {
               { __('IP address') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
+	    </div>
+    	);
+    }
+
+	if(this.state.mode === 'sta' && (this.state.staContent.wanProto == 'static' || this.state.staContent.wanProto == 'dhcp')) {
+		elemNET3 = (
+	    <div>
           <TextField
           hintText={__('Input netmask, ex: 255.255.255.0')}
           type="text"
@@ -448,14 +392,6 @@ export default class networkComponent extends React.Component {
                 	ssid: this.state.staContent.ssid,
 			      	key: this.state.staContent.key,
 			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			      	lanNetmask: this.state.staContent.lanNetmask,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
 			        wanProto: this.state.staContent.wanProto,
 			        wanIpaddr: this.state.staContent.wanIpaddr,
 			        wanGateway: this.state.staContent.wanGateway,
@@ -474,7 +410,7 @@ export default class networkComponent extends React.Component {
               { __('Netmask') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
-                    <TextField
+          <TextField
           hintText={__('Input gateway, ex: 192.168.x.1')}
           type="text"
           value={ this.state.staContent.wanGateway}
@@ -487,14 +423,6 @@ export default class networkComponent extends React.Component {
                 	ssid: this.state.staContent.ssid,
 			      	key: this.state.staContent.key,
 			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			      	lanNetmask: this.state.staContent.lanNetmask,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
 			        wanProto: this.state.staContent.wanProto,
 			        wanIpaddr: this.state.staContent.wanIpaddr,
 			        wanNetmask: this.state.staContent.wanNetmask,
@@ -526,14 +454,6 @@ export default class networkComponent extends React.Component {
                 	ssid: this.state.staContent.ssid,
 			      	key: this.state.staContent.key,
 			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			      	lanNetmask: this.state.staContent.lanNetmask,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
 			        wanProto: this.state.staContent.wanProto,
 			        wanIpaddr: this.state.staContent.wanIpaddr,
 			        wanGateway: this.state.staContent.wanGateway,
@@ -551,93 +471,34 @@ export default class networkComponent extends React.Component {
             <div>
               { __('DNS server') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />
-          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '20px', marginBottom: '0px' }}></div>
-        <h3 style={{
-            textAlign: 'left',
-            textDecoration: 'none',
-            fontSize: '12px',
-            marginBottom: '-5px',
-          }}>{__('LAN')}</h3>
-	      <TextField
-          value={ this.state.staContent.lanProto }
-          style={{ width: '100%' }}
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-          floatingLabelText={
-            <div>
-              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
-            </div>
-          } />
+          } />         
+	    </div>
+    	);
+	}
 
-          <TextField
-          hintText={__('Input IP, ex: 192.168.x.xxx')}
-          type="text"
-          value={ this.state.staContent.lanIpaddr }
-          style={{ width: '100%' }}
-          onChange={
-            (e) => {
-              this.setState({
-                staContent: {
-                	lanIpaddr: e.target.value,
-                	ssid: this.state.staContent.ssid,
-			      	key: this.state.staContent.key,
-			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanNetmask: this.state.staContent.lanNetmask,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
-			        lanIfname: this.state.staContent.lanIfname,
-			        wanProto: this.state.staContent.wanProto,
-			        wanIpaddr: this.state.staContent.wanIpaddr,
-			        wanNetmask: this.state.staContent.wanNetmask,
-			        wanGateway: this.state.staContent.wanGateway,
-			        wanDns: this.state.staContent.wanDns,
-			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
-			        wanIfname: this.state.staContent.wanIfname,
-                },
-              });
-            }
-          }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-          floatingLabelText={
-            <div>
-              { __('IP address') } <b style={{ color: 'red' }}>*</b>
-            </div>
-          } />
-          <TextField
+	if(this.state.mode === 'ap' && (this.state.apContent.wanProto == 'static' || this.state.apContent.wanProto == 'dhcp')) {
+    	elemNET3 = (
+      	<div>
+        <TextField
           hintText={__('Input netmask, ex: 255.255.255.0')}
           type="text"
-          value={ this.state.staContent.lanNetmask }
+          value={ this.state.apContent.wanNetmask }
           style={{ width: '100%' }}
           onChange={
             (e) => {
               this.setState({
-                staContent: {
-                	lanNetmask: e.target.value,
-                	ssid: this.state.staContent.ssid,
-			      	key: this.state.staContent.key,
-			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			        lanDns: this.state.staContent.lanDns,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
-			        wanProto: this.state.staContent.wanProto,
-			        wanIpaddr: this.state.staContent.wanIpaddr,
-			        wanNetmask: this.state.staContent.wanNetmask,
-			        wanGateway: this.state.staContent.wanGateway,
-			        wanDns: this.state.staContent.wanDns,
-			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
-			        wanIfname: this.state.staContent.wanIfname,
+                apContent: {
+                  wanNetmask: e.target.value,
+                  ssid: this.state.apContent.ssid,
+	              key: this.state.apContent.key,
+	              encryption: this.state.apContent.encryption,
+	              wanProto: this.state.apContent.wanProto,
+	              wanIpaddr: this.state.apContent.wanIpaddr,
+	              wanGateway: this.state.apContent.wanGateway,
+	              wanDns: this.state.apContent.wanDns,
+	              wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+	              wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+	              wanIfname: this.state.apContent.wanIfname,
                 },
               });
             }
@@ -650,33 +511,56 @@ export default class networkComponent extends React.Component {
             </div>
           } />
           <TextField
-          hintText={__('Input DNS, ex: 8.8.8.8')}
+          hintText={__('Input gateway, ex: 192.168.x.1')}
           type="text"
-          value={ this.state.staContent.lanDns }
+          value={ this.state.apContent.wanGateway}
           style={{ width: '100%' }}
           onChange={
             (e) => {
               this.setState({
-                staContent: {
-                	lanDns: e.target.value,
-                	ssid: this.state.staContent.ssid,
-			      	key: this.state.staContent.key,
-			      	encryption: this.state.staContent.encryption,
-			      	lanProto: this.state.staContent.lanProto,
-			      	lanIpaddr: this.state.staContent.lanIpaddr,
-			        lanNetmask: this.state.staContent.lanNetmask,
-			        lanForce_link: this.state.staContent.lanForce_link,
-			        lanType: this.state.staContent.lanTypelanForce_link,
-			        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-					lan_orig_bridge: this.state.staContent.lan_orig_bridge,
-			        wanProto: this.state.staContent.wanProto,
-			        wanIpaddr: this.state.staContent.wanIpaddr,
-			        wanNetmask: this.state.staContent.wanNetmask,
-			        wanGateway: this.state.staContent.wanGateway,
-			        wanDns: this.state.staContent.wanDns,
-			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
-			        wanIfname: this.state.staContent.wanIfname,
+                apContent: {
+                  wanGateway: e.target.value,
+                  ssid: this.state.apContent.ssid,
+	              key: this.state.apContent.key,
+	              encryption: this.state.apContent.encryption,
+	              wanProto: this.state.apContent.wanProto,
+	              wanIpaddr: this.state.apContent.wanIpaddr,
+	              wanNetmask: this.state.apContent.wanNetmask,
+	              wanDns: this.state.apContent.wanDns,
+	              wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+	              wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+	              wanIfname: this.state.apContent.wanIfname,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Gateway') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          <TextField
+          hintText={__('Input DNS, ex: 8.8.8.8')}
+          type="text"
+          value={ this.state.apContent.wanDns }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+	                apContent: {
+	                wanDns: e.target.value,
+	                ssid: this.state.apContent.ssid,
+	                key: this.state.apContent.key,
+		            encryption: this.state.apContent.encryption,
+		            wanProto: this.state.apContent.wanProto,
+		            wanIpaddr: this.state.apContent.wanIpaddr,
+		            wanGateway: this.state.apContent.wanGateway,
+		            wanNetmask: this.state.apContent.wanNetmask,
+		            wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+		            wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+		            wanIfname: this.state.apContent.wanIfname,
                 },
               });
             }
@@ -687,10 +571,10 @@ export default class networkComponent extends React.Component {
             <div>
               { __('DNS server') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />
-        </div>
-    	);
-    }
+          } />         
+  		</div>
+  	  );
+	}
 
     if (this.state.mode === 'sta') {
       if (this.state.staContent.encryption) {
@@ -711,15 +595,6 @@ export default class networkComponent extends React.Component {
                       	key: e.target.value,
                       	encryption: true,
                       	wanIpaddr: this.state.staContent.wanIpaddr,
-				      	lanProto: this.state.staContent.lanProto,
-				      	lanIpaddr: this.state.staContent.lanIpaddr,
-				      	lanNetmask: this.state.staContent.lanNetmask,
-				        lanDns: this.state.staContent.lanDns,
-				        lanForce_link: this.state.staContent.lanForce_link,
-				        lanType: this.state.staContent.lanTypelanForce_link,
-				        lan_orig_ifname: this.state.staContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.staContent.lan_orig_bridge,
-				        lanIfname: this.state.staContent.lanIfname,
 				        wanProto: this.state.staContent.wanProto,
 				        wanNetmask: this.state.staContent.wanNetmask,
 				        wanGateway: this.state.staContent.wanGateway,
@@ -836,15 +711,7 @@ export default class networkComponent extends React.Component {
                     apContent: {
                         ssid: this.state.apContent.ssid,
                         key: e.target.value,
-                      	lanNetmask: this.state.apContent.lanNetmask,
 				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanIpaddr: this.state.apContent.lanIpaddr,
-				        lanDns: this.state.apContent.lanDns,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
 				      	wanProto: this.state.apContent.wanProto,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
@@ -857,15 +724,7 @@ export default class networkComponent extends React.Component {
                     apContent: {
                         ssid: this.state.apContent.ssid,
                         key: e.target.value,
-                        lanNetmask: this.state.apContent.lanNetmask,
 				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanIpaddr: this.state.apContent.lanIpaddr,
-				        lanDns: this.state.apContent.lanDns,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
 				      	wanProto: this.state.apContent.wanProto,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
@@ -878,15 +737,7 @@ export default class networkComponent extends React.Component {
                     apContent: {
                         ssid: this.state.apContent.ssid,
                         key: e.target.value,
-                        lanNetmask: this.state.apContent.lanNetmask,
 				        encryption: this.state.apContent.encryption,
-				        lanProto: this.state.apContent.lanProto,
-				        lanIpaddr: this.state.apContent.lanIpaddr,
-				        lanDns: this.state.apContent.lanDns,
-				        lanForce_link: this.state.apContent.lanForce_link,
-				        lanType: this.state.apContent.lanType,
-				        lan_orig_ifname: this.state.apContent.lan_orig_ifname,
-						lan_orig_bridge: this.state.apContent.lan_orig_bridge,
 				      	wanProto: this.state.apContent.wanProto,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
@@ -1147,6 +998,8 @@ export default class networkComponent extends React.Component {
                 marginBottom: '-5px',
               }}>{__('WAN')}</h3>
              { elemNET }
+             { elemNET2 }
+             { elemNET3 }
             <div style={{
               display: 'flex',
               flexDirection: 'row',
@@ -1217,8 +1070,7 @@ export default class networkComponent extends React.Component {
   _onRadioButtonClick(mode) {
     switch (mode) {
     case 'ap':
-      this.state.apContent.wanProto = 'dhcp';
-      this.state.apContent.lanProto = 'static';
+      this.state.staContent.wanProto = '';
       if (this.state.apContent.key.length > 0 && this.state.apContent.key.length < 8) {
         this.setState({ mode: mode, notPassPassword: true, showPassword: false});
       } else {
@@ -1226,8 +1078,7 @@ export default class networkComponent extends React.Component {
       }
       break;
     case 'sta':
-      this.state.staContent.wanProto = 'static';
-      this.state.staContent.lanProto = 'static';
+      this.state.apContent.wanProto = '';
       this.setState({ mode: mode, notPassPassword: false, showPassword: false, showRepeaterPassword: false, notPassRepeaterPassword: false });
       break;
     case 'apsta':
@@ -1278,15 +1129,6 @@ export default class networkComponent extends React.Component {
     change.apstaContent.repeaterKey = this.state.apstaContent.repeaterKey;
 
     change.staContent.wanIpaddr = this.state.staContent.wanIpaddr;
-  	change.staContent.lanProto = this.state.staContent.lanProto;
-  	change.staContent.lanIpaddr = this.state.staContent.lanIpaddr;
-  	change.staContent.lanNetmask = this.state.staContent.lanNetmask;
-    change.staContent.lanDns = this.state.staContent.lanDns;
-    change.staContent.lanForce_link = this.state.staContent.lanForce_link;
-    change.staContent.lanType = this.state.staContent.lanTypelanForce_link;
-    change.staContent.lan_orig_ifname = this.state.staContent.lan_orig_ifname;
-	change.staContent.lan_orig_bridge = this.state.staContent.lan_orig_bridge;
-    change.staContent.lanIfname = this.state.staContent.lanIfname;
     change.staContent.wanProto = this.state.staContent.wanProto;
     change.staContent.wanNetmask = this.state.staContent.wanNetmask;
     change.staContent.wanGateway = this.state.staContent.wanGateway;
