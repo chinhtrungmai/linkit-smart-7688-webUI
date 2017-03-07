@@ -111,11 +111,9 @@ export default class sysinfoComponent extends React.Component {
 
       switch(this.props.boardInfo.network.lan.proto) {
       case 'dhcp':
-      	this.state.proto = 'DHCP';
       	break;
 
       case 'static':
-      	this.state.proto = 'Static';
       	break;
 
       case 'ap':
@@ -124,14 +122,14 @@ export default class sysinfoComponent extends React.Component {
 
       switch (this.state.mode) {
       case 'ap':
-      	this.state.stringMode = 'AP';
+      	this.state.stringMode = 'ap';
         if (this.props.boardInfo.lan['ipv4-address'])
           this.state.currentIp = this.props.boardInfo.lan['ipv4-address'][0].address;
         else
           this.state.currentIp = 'cannot read ip address in ap mode';
         break;
       case 'sta':
-      	this.state.stringMode = 'Station';
+      	this.state.stringMode = 'station';
         if (this.props.boardInfo.wan['ipv4-address'])
           this.state.currentIp = this.props.boardInfo.wan['ipv4-address'][0].address;
         else
@@ -178,16 +176,39 @@ export default class sysinfoComponent extends React.Component {
         <p style={ styles.panelContent }>{ this.state.currentIp }</p>
       </div>
     );
-
-    let wanBlock = (
-      <div style={ styles.content } key="wanBlock">
-        <h3 style={styles.h3}>{ __('Wifi information') }</h3>
-        <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
-        <p style={ styles.panelContent }>{ this.state.stringMode }</p>
-        <h3 style={ styles.panelTitle }>{ __('IP') }</h3>
-        <p style={ styles.panelContent }>{ this.state.currentIp }</p>
-      </div>
-    );
+    let netBlock;
+    if(this.state.mode === 'ap') {
+      netBlock = (
+        <div style={ styles.content } key="netBlock">
+          <h3 style={styles.h3}>{ __('Network information') }</h3>
+          <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
+          <p style={ styles.panelContent }>{ this.state.stringMode }</p>
+          <h3 style={ styles.panelTitle }>{ __('WAN') }</h3>
+          <p style={ styles.panelContent }>{ 'mode: ' + this.props.boardInfo.network.wan.proto }</p>
+          <h3 style={ styles.panelTitle }>{ __('LAN') }</h3>
+          <p style={ styles.panelContent }>{ 'mode: ' + this.props.boardInfo.lan.proto }</p>
+          <p style={ styles.panelContent }>{ 'ip: ' + this.props.boardInfo.network.lan.ipaddr }</p>
+          <p style={ styles.panelContent }>{ 'netmask: ' + this.props.boardInfo.network.lan.netmask }</p>
+        </div>
+      );
+    } else if(this.state.mode === 'sta') {
+      netBlock = (
+        <div style={ styles.content } key="netBlock">
+          <h3 style={styles.h3}>{ __('Network information') }</h3>
+          <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
+          <p style={ styles.panelContent }>{ this.state.stringMode }</p>
+          <h3 style={ styles.panelTitle }>{ __('WAN') }</h3>
+          <p style={ styles.panelContent }>{ 'mode: ' + this.props.boardInfo.network.wan.proto }</p>
+          <p style={ styles.panelContent }>{ 'ip: ' + this.props.boardInfo.network.wan.ipaddr }</p>
+          <p style={ styles.panelContent }>{ 'netmask: ' + this.props.boardInfo.network.wan.netmask }</p>
+          <p style={ styles.panelContent }>{ 'gateway: ' + this.props.boardInfo.network.wan.gateway }</p>
+          <h3 style={ styles.panelTitle }>{ __('LAN') }</h3>
+          <p style={ styles.panelContent }>{ 'mode:' + this.props.boardInfo.network.lan.proto }</p>
+          <p style={ styles.panelContent }>{ 'ip:' + this.props.boardInfo.network.lan.ipaddr }</p>
+          <p style={ styles.panelContent }>{ 'netmask:' + this.props.boardInfo.network.lan.netmask }</p>
+        </div>
+      );
+    }
 
     if (this.props.boardInfo.network.lan.proto === 'static') {
     	elem = (
@@ -197,15 +218,6 @@ export default class sysinfoComponent extends React.Component {
 	        </div>
       	);
     }
-
-    let lanBlock = (
-	      <div style={ styles.content } key="lanBlock">
-	        <h3 style={styles.h3}>{ __('LAN information') }</h3>
-	        <h3 style={ styles.panelTitle }>{ __('Mode') }</h3>
-	        <p style={ styles.panelContent }>{ this.state.proto }</p>
-	        { elem }
-	      </div>
-    );
 
     let softwareBlock = (
       <div style={ styles.content } key="softwareBlock">
@@ -220,9 +232,7 @@ export default class sysinfoComponent extends React.Component {
         <Card>
           { PlatformBlock }
           <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '10px', marginBottom: '0px' }}></div>
-          { wanBlock }
-          <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '10px', marginBottom: '0px' }}></div>
-          { lanBlock }
+          { netBlock }
           <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '10px', marginBottom: '0px' }}></div>
           { softwareBlock }
           <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '10px', marginBottom: '0px' }}></div>

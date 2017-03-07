@@ -31,24 +31,40 @@ const appActions = {
   loadModel: (session) => {
     return rpc.loadModel(session);
   },
-  setWifi: (mode, content, session) => {
-    if (mode === 'apsta') {
-      return rpc.setWifi('sta', content.ssid, content.key, session)
+  setNet: (mode, content, session) => {
+    if (mode === 'ap') {
+      return rpc.setApWAN(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
+      then(() => {
+        rpc.delApLAN(session);
+      })
       .then(() => {
-        return rpc.setWifi('ap', content.repeaterSsid, content.repeaterKey, session);
+        return rpc.setApLAN(content.lanProto, content.lanIpaddr, content.lanNetmask, content.lanDns, content.lanForce_link, content.lanType, content.lan_orig_ifname, content.lan_orig_bridge, session);
+      })
+      then(() => {
+        return rpc.uciCommit('network', session);
+      });
+    } else if (mode === 'sta') {
+      return rpc.setStaWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
+      .then(() => {
+        return rpc.setStaLAN(content.lanProto, content.lanIpaddr, content.lanNetmask, content.lanDns, content.lanForce_link, content.lanType, content.lan_orig_ifname, content.lan_orig_bridge, content.lanIfname, session);
+      })
+      then(() => {
+        return rpc.uciCommit('network', session);
       });
     }
+  },
+  setWifi: (mode, content, session) => {
     return rpc.setWifi(mode, content.ssid, content.key, session);
   },
   setWifiMode: (mode, session) => {
     let network = 'lan';
     let ignore = 1;
-    // let proto = 'dhcp';
+    let proto = 'dhcp';
 
     if (mode !== 'apsta') {
       network = 'wan';
       ignore = 0;
-      // proto = 'static';
+      proto = 'static';
     }
 
     return rpc.setWifiMode(mode, session)
@@ -64,21 +80,9 @@ const appActions = {
     .then(() => {
       return rpc.uciCommit('dhcp', session);
     })
-    // .then(() => {
-    //   return rpc.setWifiProtoConfig(proto, session);
-    // })
     .then(() => {
-      return rpc.uciCommit('network', session);
-    });
-  },
-  setLAN: (mode, content, session) => {
-    return rpc.setLANProtoConfig(mode, content.ipaddr, content.gateway, session)
-    .then(() => {
-      return rpc.uciCommit('network', session);
-    });
-  },
-  setDHCP: (mode, content, session) => {
-    return rpc.setWifiProtoConfig(proto, session)
+      return rpc.setWifiProtoConfig(proto, session);
+    })
     .then(() => {
       return rpc.uciCommit('network', session);
     });
