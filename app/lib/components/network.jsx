@@ -53,7 +53,13 @@ export default class networkComponent extends React.Component {
       payload: 0,
       text: __('Choose the Wi-Fi network.'),
     }];
-
+    
+    this.state.ipModeList = [
+      { payload: '0', text: __('Choose the IP mode.') },
+      { payload: 'dhcp', text: __('dhcp') },
+      { payload: 'static', text: __('static') },
+    ];
+    
     if (this.props.boardInfo.wifi.ap.encryption === 'none') {
       this.state.apContent = {
         ssid: this.props.boardInfo.wifi.ap.ssid || '',
@@ -228,75 +234,91 @@ export default class networkComponent extends React.Component {
     ];
 
     if(this.state.mode === 'ap') {
-	   	elemNET = (
+        elemNET = (
         <div>
-          <TextField
-          hintText={__('Choose static or dhcp')}
-          type="text"
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
           value={ this.state.apContent.wanProto }
-          style={{ width: '100%' }}
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
           onChange={
-            (e) => {
-              this.setState({
-                apContent: {
-                	wanProto: e.target.value,
-                	ssid: this.state.apContent.ssid,
-			      	key: this.state.apContent.key,
-			      	encryption: this.state.apContent.encryption,
-			        wanIpaddr: this.state.apContent.wanIpaddr,
-			        wanNetmask: this.state.apContent.wanNetmask,
-			        wanGateway: this.state.apContent.wanGateway,
-			        wanDns: this.state.apContent.wanDns,
-			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
-			        wanIfname: this.state.apContent.wanIfname,
-                },
-              });
-            }
-          }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
-          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-          floatingLabelText={
-            <div>
-              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
-            </div>
-          } />
-        </div>
-    	);
+          (e) => {
+            this.setState({
+              apContent: {
+                  wanProto: e.target.value,
+                  ssid: this.state.apContent.ssid,
+                  key: this.state.apContent.key,
+                  encryption: this.state.apContent.encryption,
+                  wanIpaddr: this.state.apContent.wanIpaddr,
+                  wanNetmask: this.state.apContent.wanNetmask,
+                  wanGateway: this.state.apContent.wanGateway,
+                  wanDns: this.state.apContent.wanDns,
+                  wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                  wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                  wanIfname: this.state.apContent.wanIfname,
+              },
+             });
+           }
+         }    
+         menuItems={ this.state.ipModeList }
+         floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+         underlineFocusStyle={{ borderColor: Colors.amber700 }}
+         floatingLabelText={
+           <div>
+             { __('IP mode') } <b style={{ color: 'red' }}>*</b>
+           </div>
+         } />
+         <br />
+         <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
+         </div>
+        );
     } else if(this.state.mode === 'sta') {
 	   	elemNET = (
         <div>
-          <TextField
-          hintText={__('Choose static or dhcp')}
-          type="text"
-          value={ this.state.staContent.wanProto }
-          style={{ width: '100%' }}
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
+	   	  value={ this.state.staContent.wanProto }
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
           onChange={
             (e) => {
               this.setState({
                 staContent: {
-                	wanProto: e.target.value,
-                	ssid: this.state.staContent.ssid,
-			      	key: this.state.staContent.key,
-			      	encryption: this.state.staContent.encryption,
-			        wanIpaddr: this.state.staContent.wanIpaddr,
-			        wanNetmask: this.state.staContent.wanNetmask,
-			        wanGateway: this.state.staContent.wanGateway,
-			        wanDns: this.state.staContent.wanDns,
-			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
-			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
-			        wanIfname: this.state.staContent.wanIfname,
+                    wanProto: e.target.value,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
                 },
               });
             }
-          }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          }    
+          menuItems={ this.state.ipModeList }
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          underlineFocusStyle={{ borderColor: Colors.amber700 }}
           floatingLabelText={
             <div>
               { __('IP mode') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
+          <br />
+          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
         </div>
     	);
     }
@@ -713,6 +735,10 @@ export default class networkComponent extends React.Component {
                         key: e.target.value,
 				        encryption: this.state.apContent.encryption,
 				      	wanProto: this.state.apContent.wanProto,
+		                wanIpaddr: this.state.apContent.wanIpaddr,
+		                wanNetmask: this.state.apContent.wanNetmask,
+		                wanGateway: this.state.apContent.wanGateway,
+		                wanDns: this.state.apContent.wanDns,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
@@ -726,6 +752,10 @@ export default class networkComponent extends React.Component {
                         key: e.target.value,
 				        encryption: this.state.apContent.encryption,
 				      	wanProto: this.state.apContent.wanProto,
+		                wanIpaddr: this.state.apContent.wanIpaddr,
+		                wanNetmask: this.state.apContent.wanNetmask,
+		                wanGateway: this.state.apContent.wanGateway,
+		                wanDns: this.state.apContent.wanDns,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
@@ -739,6 +769,10 @@ export default class networkComponent extends React.Component {
                         key: e.target.value,
 				        encryption: this.state.apContent.encryption,
 				      	wanProto: this.state.apContent.wanProto,
+		                wanIpaddr: this.state.apContent.wanIpaddr,
+		                wanNetmask: this.state.apContent.wanNetmask,
+		                wanGateway: this.state.apContent.wanGateway,
+		                wanDns: this.state.apContent.wanDns,
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
