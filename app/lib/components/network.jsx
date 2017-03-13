@@ -147,6 +147,46 @@ export default class networkComponent extends React.Component {
     this._returnToIndex = ::this._returnToIndex;
     this._cancelErrorMsgDialog = ::this._cancelErrorMsgDialog;
     this._cancelBoardMsgDialog = ::this._cancelBoardMsgDialog;
+
+    if (this.props.boardInfo.wan['ipv4-address']) {
+        var netmask = this.props.boardInfo.wan['ipv4-address'][0].mask;
+        switch (netmask) {
+          case 30: var Netmask='255.255.255.252'; break;
+          case 29: var Netmask='255.255.255.248'; break;
+          case 28: var Netmask='255.255.255.240'; break;
+          case 27: var Netmask='255.255.255.224'; break;
+          case 26: var Netmask='255.255.255.192'; break;
+          case 25: var Netmask='255.255.255.128'; break;
+          case 24: var Netmask='255.255.255.0'; break;
+          case 23: var Netmask='255.255.254.0'; break;
+          case 22: var Netmask='255.255.252.0'; break;
+          case 21: var Netmask='255.255.248.0'; break;
+          case 20: var Netmask='255.255.240.0'; break;
+          case 19: var Netmask='255.255.224.0'; break;
+          case 18: var Netmask='255.255.192.0'; break;
+          case 17: var Netmask='255.255.128.0'; break;
+          case 16: var Netmask='255.255.0.0'; break;
+        }
+        var address=this.props.boardInfo.wan['ipv4-address'][0].address;
+        var gateway=this.props.boardInfo.network.wan.gateway;
+        if (gateway='undefined') gateway='--';
+    } else {
+        var address='--';
+        var Netmask='--';
+        var gateway='--';
+    }
+    var dns=this.props.boardInfo.network.lan.dns;
+    if (dns=='undefined') dns='--';
+    
+    this.state.staContent.wanIpaddr=address;
+    this.state.staContent.wanNetmask=Netmask;
+    this.state.staContent.wanGateway=gateway;
+    this.state.staContent.wanDns=dns;
+
+    this.state.apContent.wanIpaddr=address;
+    this.state.apContent.wanNetmask=Netmask;
+    this.state.apContent.wanGateway=gateway;
+    this.state.apContent.wanDns=dns;
   }
 
   componentWillMount() {
@@ -189,9 +229,12 @@ export default class networkComponent extends React.Component {
       marginBottom: '44px',
     };
     let elemWIFI;
-    let elemNET;
-    let elemNET2;
-    let elemNET3;
+    let elemNETap;
+    let elemNETsta;
+    let elemNET2ap;
+    let elemNET2sta;
+    let elemNET3ap;
+    let elemNET3sta;
     let staPassword;
 
     if (this.state.showPassword) {
@@ -233,8 +276,8 @@ export default class networkComponent extends React.Component {
         hoverColor="none" />,
     ];
 
-    if(this.state.mode === 'ap') {
-        elemNET = (
+    if (this.state.mode === 'ap') {
+        elemNETap = (
         <div>
           <SelectField
           style={{
@@ -266,8 +309,8 @@ export default class networkComponent extends React.Component {
            }
          }    
          menuItems={ this.state.ipModeList }
-         floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+         floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
          floatingLabelText={
            <div>
              { __('IP mode') } <b style={{ color: 'red' }}>*</b>
@@ -277,8 +320,8 @@ export default class networkComponent extends React.Component {
          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
          </div>
         );
-    } else if(this.state.mode === 'sta') {
-	   	elemNET = (
+    } else if (this.state.mode === 'sta') {
+	   	elemNETsta = (
         <div>
           <SelectField
           style={{
@@ -310,8 +353,8 @@ export default class networkComponent extends React.Component {
             }
           }    
           menuItems={ this.state.ipModeList }
-          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
               { __('IP mode') } <b style={{ color: 'red' }}>*</b>
@@ -323,8 +366,8 @@ export default class networkComponent extends React.Component {
     	);
     }
 
-    if(this.state.apContent.wanProto == 'static') {
-		elemNET2 = (
+    if ((this.state.mode === 'ap') && (this.state.apContent.wanProto == 'static' || this.state.apContent.wanProto == 'dhcp')) {
+        elemNET2ap = (
 	    <div>
           <TextField
           hintText={__('Input IP, ex: 192.168.x.xxx')}
@@ -360,8 +403,8 @@ export default class networkComponent extends React.Component {
 	    </div>
     	);
     }
-    if(this.state.staContent.wanProto == 'static') {
-    	elemNET2 = (
+    if ((this.state.mode === 'sta') && (this.state.staContent.wanProto == 'static' || this.state.staContent.wanProto == 'dhcp')) {
+        elemNET2sta = (
 	    <div>
           <TextField
           hintText={__('Input IP, ex: 192.168.x.xxx')}
@@ -399,7 +442,7 @@ export default class networkComponent extends React.Component {
     }
 
 	if(this.state.mode === 'sta' && (this.state.staContent.wanProto == 'static' || this.state.staContent.wanProto == 'dhcp')) {
-		elemNET3 = (
+	    elemNET3sta = (
 	    <div>
           <TextField
           hintText={__('Input netmask, ex: 255.255.255.0')}
@@ -499,7 +542,7 @@ export default class networkComponent extends React.Component {
 	}
 
 	if(this.state.mode === 'ap' && (this.state.apContent.wanProto == 'static' || this.state.apContent.wanProto == 'dhcp')) {
-    	elemNET3 = (
+	    elemNET3ap = (
       	<div>
           <TextField
           hintText={__('Input netmask, ex: 255.255.255.0')}
@@ -1031,9 +1074,12 @@ export default class networkComponent extends React.Component {
                 fontSize: '12px',
                 marginBottom: '-5px',
               }}>{__('WAN')}</h3>
-             { elemNET }
-             { elemNET2 }
-             { elemNET3 }
+             { elemNETap }
+             { elemNETsta }
+             { elemNET2ap }
+             { elemNET2sta }
+             { elemNET3ap }
+             { elemNET3sta }
             <div style={{
               display: 'flex',
               flexDirection: 'row',
@@ -1104,7 +1150,6 @@ export default class networkComponent extends React.Component {
   _onRadioButtonClick(mode) {
     switch (mode) {
     case 'ap':
-      this.state.staContent.wanProto = '';
       if (this.state.apContent.key.length > 0 && this.state.apContent.key.length < 8) {
         this.setState({ mode: mode, notPassPassword: true, showPassword: false});
       } else {
@@ -1112,7 +1157,6 @@ export default class networkComponent extends React.Component {
       }
       break;
     case 'sta':
-      this.state.apContent.wanProto = '';
       this.setState({ mode: mode, notPassPassword: false, showPassword: false, showRepeaterPassword: false, notPassRepeaterPassword: false });
       break;
     case 'apsta':
