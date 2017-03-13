@@ -106,6 +106,7 @@ export default class contentComponent extends React.Component {
           }}
           inkBarStyle={{
             backgroundColor: '#54EFE2',
+            height:'5',
           }}
           style={ styles.content }>
           <Tab
