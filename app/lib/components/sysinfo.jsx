@@ -147,6 +147,36 @@ export default class sysinfoComponent extends React.Component {
         break;
       }
     }
+
+    if (this.props.boardInfo.wan['ipv4-address']) {
+        var netmask = this.props.boardInfo.wan['ipv4-address'][0].mask;
+        switch (netmask) {
+          case 30: var Netmask='255.255.255.252'; break;
+          case 29: var Netmask='255.255.255.248'; break;
+          case 28: var Netmask='255.255.255.240'; break;
+          case 27: var Netmask='255.255.255.224'; break;
+          case 26: var Netmask='255.255.255.192'; break;
+          case 25: var Netmask='255.255.255.128'; break;
+          case 24: var Netmask='255.255.255.0'; break;
+          case 23: var Netmask='255.255.254.0'; break;
+          case 22: var Netmask='255.255.252.0'; break;
+          case 21: var Netmask='255.255.248.0'; break;
+          case 20: var Netmask='255.255.240.0'; break;
+          case 19: var Netmask='255.255.224.0'; break;
+          case 18: var Netmask='255.255.192.0'; break;
+          case 17: var Netmask='255.255.128.0'; break;
+          case 16: var Netmask='255.255.0.0'; break;
+        }
+        this.Netmask = Netmask;
+        this.address=this.props.boardInfo.wan['ipv4-address'][0].address;
+        {/*this.gateway=this.props.boardInfo.network.wan.gateway;*/}
+        this.gateway=this.address.substring(0, this.address.lastIndexOf('.') + 1) + '1';
+        if (this.gateway=='undefined') this.gateway='--';
+    } else {
+        this.address='--';
+        this.Netmask='--';
+        this.gateway='--';
+    }
   }
 
   componentWillMount() {
@@ -178,34 +208,6 @@ export default class sysinfoComponent extends React.Component {
     );
     let netBlock;
     if(this.state.mode === 'ap') {
-        if (this.props.boardInfo.wan['ipv4-address']) {
-            var netmask = this.props.boardInfo.wan['ipv4-address'][0].mask;
-            switch (netmask) {
-              case 30: var Netmask='255.255.255.252'; break;
-              case 29: var Netmask='255.255.255.248'; break;
-              case 28: var Netmask='255.255.255.240'; break;
-              case 27: var Netmask='255.255.255.224'; break;
-              case 26: var Netmask='255.255.255.192'; break;
-              case 25: var Netmask='255.255.255.128'; break;
-              case 24: var Netmask='255.255.255.0'; break;
-              case 23: var Netmask='255.255.254.0'; break;
-              case 22: var Netmask='255.255.252.0'; break;
-              case 21: var Netmask='255.255.248.0'; break;
-              case 20: var Netmask='255.255.240.0'; break;
-              case 19: var Netmask='255.255.224.0'; break;
-              case 18: var Netmask='255.255.192.0'; break;
-              case 17: var Netmask='255.255.128.0'; break;
-              case 16: var Netmask='255.255.0.0'; break;
-            }
-            var address=this.props.boardInfo.wan['ipv4-address'][0].address;
-            var gateway=this.props.boardInfo.network.wan.gateway;
-            if (gateway='undefined') gateway='--';
-        } else {
-            var address='--';
-            var Netmask='--';
-            var gateway='--';
-        }
-        
         netBlock = (
         <div style={ styles.content } key="netBlock">
           <h3 style={styles.h3}>{ __('Network information') }</h3>
@@ -213,40 +215,12 @@ export default class sysinfoComponent extends React.Component {
           <p style={ styles.panelContent }>{ this.state.stringMode }</p>
           <h3 style={ styles.panelTitle }>{ __('WAN') }</h3>
           <p style={ styles.panelContent }>{ 'mode: ' + this.props.boardInfo.network.wan.proto }</p>
-          <p style={ styles.panelContent }>{ 'ip: ' + address }</p>
-          <p style={ styles.panelContent }>{ 'netmask: ' + Netmask }</p>
-          <p style={ styles.panelContent }>{ 'gateway: ' + gateway}</p>
+          <p style={ styles.panelContent }>{ 'ip: ' + this.address }</p>
+          <p style={ styles.panelContent }>{ 'netmask: ' + this.Netmask }</p>
+          <p style={ styles.panelContent }>{ 'gateway: ' + this.gateway}</p>
         </div>
       );
     } else if(this.state.mode === 'sta') {
-        if (this.props.boardInfo.wan['ipv4-address']) {
-            var netmask = this.props.boardInfo.wan['ipv4-address'][0].mask;
-            switch (netmask) {
-              case 30: var Netmask='255.255.255.252'; break;
-              case 29: var Netmask='255.255.255.248'; break;
-              case 28: var Netmask='255.255.255.240'; break;
-              case 27: var Netmask='255.255.255.224'; break;
-              case 26: var Netmask='255.255.255.192'; break;
-              case 25: var Netmask='255.255.255.128'; break;
-              case 24: var Netmask='255.255.255.0'; break;
-              case 23: var Netmask='255.255.254.0'; break;
-              case 22: var Netmask='255.255.252.0'; break;
-              case 21: var Netmask='255.255.248.0'; break;
-              case 20: var Netmask='255.255.240.0'; break;
-              case 19: var Netmask='255.255.224.0'; break;
-              case 18: var Netmask='255.255.192.0'; break;
-              case 17: var Netmask='255.255.128.0'; break;
-              case 16: var Netmask='255.255.0.0'; break;
-            }
-            var address=this.props.boardInfo.wan['ipv4-address'][0].address;
-            var gateway=this.props.boardInfo.network.wan.gateway;
-            if (gateway='undefined') gateway='--';
-        } else {
-            var address='--';
-            var Netmask='--';
-            var gateway='--';
-        }
-        
         netBlock = (
         <div style={ styles.content } key="netBlock">
           <h3 style={styles.h3}>{ __('Network information') }</h3>
@@ -254,9 +228,9 @@ export default class sysinfoComponent extends React.Component {
           <p style={ styles.panelContent }>{ this.state.stringMode }</p>
           <h3 style={ styles.panelTitle }>{ __('WAN') }</h3>
           <p style={ styles.panelContent }>{ 'mode: ' + this.props.boardInfo.network.wan.proto }</p>
-          <p style={ styles.panelContent }>{ 'ip: ' + address }</p>
-          <p style={ styles.panelContent }>{ 'netmask: ' + Netmask }</p>
-          <p style={ styles.panelContent }>{ 'gateway: ' + gateway }</p>
+          <p style={ styles.panelContent }>{ 'ip: ' + this.address }</p>
+          <p style={ styles.panelContent }>{ 'netmask: ' + this.Netmask }</p>
+          <p style={ styles.panelContent }>{ 'gateway: ' + this.gateway }</p>
         </div>
       );
     }

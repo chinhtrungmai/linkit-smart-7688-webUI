@@ -168,8 +168,9 @@ export default class networkComponent extends React.Component {
           case 16: var Netmask='255.255.0.0'; break;
         }
         var address=this.props.boardInfo.wan['ipv4-address'][0].address;
-        var gateway=this.props.boardInfo.network.wan.gateway;
-        if (gateway='undefined') gateway='--';
+        {/*var gateway=this.props.boardInfo.network.wan.gateway;*/}
+        var gateway=address.substring(0, address.lastIndexOf('.') + 1) + '1';
+        if (gateway=='undefined') gateway='--';
     } else {
         var address='--';
         var Netmask='--';
