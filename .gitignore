@@ -46,7 +46,7 @@ build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
-#node_modules
+node_modules
 
 /app/configs
 /tests/browser/reports/
@@ -54,6 +54,6 @@ build/Release
 # bamboo json result file
 jscs-report.json
 jshint-report.json
-#/node_modules
+/node_modules
 # client/build
 build.tar
