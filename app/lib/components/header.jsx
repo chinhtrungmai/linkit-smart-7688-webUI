@@ -1,7 +1,7 @@
 import { default as React } from 'react';
 import Radium from 'radium';
 import mui from 'material-ui';
-import Logo from '../../img/hc_topbar.png';
+import Logo from '../../img/Home_Logo.png';
 import AppActions from '../actions/appActions';
 
 const {

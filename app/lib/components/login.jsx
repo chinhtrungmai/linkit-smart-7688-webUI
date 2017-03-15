@@ -1,6 +1,6 @@
 import { default as React, PropTypes } from 'react';
 import Radium from 'radium';
-import Logo from '../../img/hc_topbar.png';
+import Logo from '../../img/Home_Logo.png';
 import mui from 'material-ui';
 import AppActions from '../actions/appActions';
 
