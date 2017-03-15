@@ -72,10 +72,10 @@ export default class loginComponent extends React.Component {
   componentWillMount() {
     ThemeManager.setComponentThemes({
       textField: {
-        borderColor: Colors.amber700,
+        borderColor: '#49BA6F',
       },
       menuItem: {
-        selectedTextColor: Colors.amber700,
+        selectedTextColor: '#49BA6F',
       },
     });
   }
@@ -117,14 +117,14 @@ export default class loginComponent extends React.Component {
                   }
                 }
                 labelStyle={{
-                  color: Colors.amber700,
+                  color: '#49BA6F',
                   lineHeight: '60px',
                   fontSize: '16px' }}
                 underlineStyle={{ border: '0px' }}/>
               <a
                 onTouchTap={ this._logOut }
                 style={{
-                  color: Colors.amber700,
+                  color: '#49BA6F',
                   textDecoration: 'none',
                   cursor: 'pointer',
                 }}>{ __('Sign out') }</a>
