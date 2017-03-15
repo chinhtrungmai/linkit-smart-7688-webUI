@@ -105,7 +105,7 @@ export default class sysinfoComponent extends React.Component {
       this.state.user = info.user;
       this.state.bootLoaderVersion = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].loader_version;
       this.state.firmwareVersion = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].firmware_version;
-      this.state.macaddr = this.props.boardInfo.network.lan.macaddr.toUpperCase();;
+      this.state.macaddr = this.props.boardInfo.network.lan.macaddr;
       this.state.wifiMACName = this.props.boardInfo.network.lan.macaddr.split(':')[3] + this.props.boardInfo.network.lan.macaddr.split(':')[4] + this.props.boardInfo.network.lan.macaddr.split(':')[5];
       this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
 

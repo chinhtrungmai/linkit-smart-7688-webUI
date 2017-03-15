@@ -195,10 +195,10 @@ export default class networkComponent extends React.Component {
 
     ThemeManager.setComponentThemes({
       textField: {
-        focusColor: Colors.amber700,
+        focusColor: '#3498db',
       },
       menuItem: {
-        selectedTextColor: Colors.amber700,
+        selectedTextColor: '#3498db',
       },
       radioButton: {
         backgroundColor: '#00a1de',
@@ -264,7 +264,7 @@ export default class networkComponent extends React.Component {
     const boardMsgActions = [
       <FlatButton
         label={ __('OK') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelBoardMsgDialog }
         hoverColor="none" />,
     ];
@@ -272,7 +272,7 @@ export default class networkComponent extends React.Component {
     const errMsgActions = [
       <FlatButton
         label={__('SIGN IN')}
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelErrorMsgDialog }
         hoverColor="none" />,
     ];
@@ -310,7 +310,7 @@ export default class networkComponent extends React.Component {
            }
          }    
          menuItems={ this.state.ipModeList }
-         underlineFocusStyle={{ borderColor: Colors.amber700 }}
+         underlineFocusStyle={{ borderColor: '#3498db' }}
          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
          floatingLabelText={
            <div>
@@ -354,7 +354,7 @@ export default class networkComponent extends React.Component {
             }
           }    
           menuItems={ this.state.ipModeList }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -394,7 +394,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -431,7 +431,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -469,7 +469,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -500,7 +500,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -531,7 +531,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -569,7 +569,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -600,7 +600,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -631,7 +631,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -651,7 +651,7 @@ export default class networkComponent extends React.Component {
               value={ this.state.staContent.key }
               hintText={__('Please enter your password')}
               floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-              underlineFocusStyle={{ borderColor: Colors.amber700 }}
+              underlineFocusStyle={{ borderColor: '#3498db' }}
               type={ textType }
               onChange={
                 (e) => {
@@ -683,7 +683,7 @@ export default class networkComponent extends React.Component {
               }
               style={{
                 textAlign: 'left',
-                color: Colors.amber700,
+                color: '#3498db',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 fontSize: '10px',
@@ -700,7 +700,7 @@ export default class networkComponent extends React.Component {
               value={ this.state.apstaContent.key }
               hintText={__('Please enter your password')}
               floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-              underlineFocusStyle={{ borderColor: Colors.amber700 }}
+              underlineFocusStyle={{ borderColor: '#3498db' }}
               type={ textType }
               onChange={
                 (e) => {
@@ -726,7 +726,7 @@ export default class networkComponent extends React.Component {
               }
               style={{
                 textAlign: 'left',
-                color: Colors.amber700,
+                color: '#3498db',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 fontSize: '14px',
@@ -755,7 +755,7 @@ export default class networkComponent extends React.Component {
               });
             }
           }
-          underlineFocusStyle={{ borderColor: Colors.amber700 }}
+          underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
@@ -764,10 +764,10 @@ export default class networkComponent extends React.Component {
           } />
           <TextField
             hintText={__('Please enter your password')}
-            errorStyle={{ borderColor: Colors.amber700 }}
+            errorStyle={{ borderColor: '#3498db' }}
             errorText={ errorText }
             type={ textType }
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
             value={ this.state.apContent.key }
             onChange={
@@ -839,7 +839,7 @@ export default class networkComponent extends React.Component {
               }
               style={{
                 textAlign: 'left',
-                color: Colors.amber700,
+                color: '#3498db',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 fontSize: '10px',
@@ -862,7 +862,7 @@ export default class networkComponent extends React.Component {
             underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
             menuItemStyle={{ maxHeight: '100px' }}
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             floatingLabelText={
               <div>
                 { __('Detected Wi-Fi network') } <b style={{ color: 'red' }}>*</b>
@@ -890,7 +890,7 @@ export default class networkComponent extends React.Component {
             underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
             menuItemStyle={{ maxHeight: '100px' }}
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             floatingLabelText={
               <div>
                 { __('Detected Wi-Fi network') } <b style={{ color: 'red' }}>*</b>
@@ -920,7 +920,7 @@ export default class networkComponent extends React.Component {
                 });
               }
             }
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
             floatingLabelText={
               <div>
@@ -930,10 +930,10 @@ export default class networkComponent extends React.Component {
           />
           <TextField
             hintText={__('Please enter your password')}
-            errorStyle={{ borderColor: Colors.amber700 }}
+            errorStyle={{ borderColor: '#3498db' }}
             errorText={ errorText }
             type={ repeaterTextType }
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
             value={ this.state.apstaContent.repeaterKey }
             onChange={
@@ -987,7 +987,7 @@ export default class networkComponent extends React.Component {
               }
               style={{
                 textAlign: 'left',
-                color: Colors.amber700,
+                color: '#3498db',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 fontSize: '14px',
@@ -1042,7 +1042,7 @@ export default class networkComponent extends React.Component {
               <RadioButton
                 value="ap"
                 style={{
-                  color: Colors.amber700,
+                  color: '#3498db',
                   marginBottom: 16,
                   marginRight: 50,
                   width: '150px',
@@ -1054,7 +1054,7 @@ export default class networkComponent extends React.Component {
                 label={__('Station mode')}
                 onTouchTap={() => this._onRadioButtonClick('sta')}
                 style={{
-                  color: Colors.amber700,
+                  color: '#3498db',
                   marginBottom: 16,
                   marginLeft: 50,
                   width: '170px',
@@ -1103,7 +1103,7 @@ export default class networkComponent extends React.Component {
                 linkButton
                 secondary
                 label={__('Configure & Restart')}
-                backgroundColor={ Colors.amber700 }
+                backgroundColor={ '#3498db' }
                 onTouchTap={ this._handleSettingMode }
                 style={{
                   width: '236px',

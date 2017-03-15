@@ -101,11 +101,11 @@ export default class contentComponent extends React.Component {
         <Tabs
           valueLink={{ value: this.state.tabsValue }}
           tabItemContainerStyle={{
-            backgroundColor: Colors.amber700,
+            backgroundColor: '#3498db',
             borderRadius: '5px 5px 0px 0px',
           }}
           inkBarStyle={{
-            backgroundColor: '#54EFE2',
+            backgroundColor: '#64aedf',
             height:'5',
           }}
           style={ styles.content }>

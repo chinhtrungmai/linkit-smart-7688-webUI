@@ -183,12 +183,12 @@ export default class sysinfoComponent extends React.Component {
     const standardActions = [
       <FlatButton
         label={ __('Cancel') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelDialog }
         hoverColor="none" />,
       <FlatButton
         label={ __('Reset') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         hoverColor="none"
         onTouchTap={ this._onFactorySubmit } />,
     ];
@@ -196,7 +196,7 @@ export default class sysinfoComponent extends React.Component {
     const boardMsgActions = [
       <FlatButton
         label={ __('OK') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelBoardMsgDialog }
         hoverColor="none" />,
     ];
@@ -204,7 +204,7 @@ export default class sysinfoComponent extends React.Component {
     const upgradeFirmwareFailedActions = [
       <FlatButton
         label={ __('OK') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelUpgradeFirmwareFailedDialog }
         hoverColor="none" />,
     ];
@@ -212,7 +212,7 @@ export default class sysinfoComponent extends React.Component {
     const upgradeFirmwareSuccessedActions = [
       <FlatButton
         label={ __('OK') }
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelUpgradeFirmwareSuccessedDialog }
         hoverColor="none" />,
     ];
@@ -220,7 +220,7 @@ export default class sysinfoComponent extends React.Component {
     const errMsgActions = [
       <FlatButton
         label={__('SIGN IN')}
-        labelStyle={{ color: Colors.amber700 }}
+        labelStyle={{ color: '#3498db' }}
         onTouchTap={ this._cancelErrorMsgDialog }
         hoverColor="none" />,
     ];
@@ -300,7 +300,7 @@ export default class sysinfoComponent extends React.Component {
           secondary
           label={ __('Configure') }
           fullWidth
-          backgroundColor={ Colors.amber700 }
+          backgroundColor={ '#3498db' }
           onTouchTap={() => { this._editPlatformBlock(true); } }
           style={{
             width: '100%',
@@ -322,7 +322,7 @@ export default class sysinfoComponent extends React.Component {
             defaultValue={ this.state.deviceName }
             underlineStyle={{ borderColor: '#D1D2D3' }}
             underlineFocusStyle={{
-              borderColor: Colors.amber700,
+              borderColor: '#3498db',
               borderWidth: '2px',
             }}
             onChange={
@@ -341,9 +341,9 @@ export default class sysinfoComponent extends React.Component {
             underlineStyle={{ borderColor: '#D1D2D3' }}
             defaultValue={ this.state.password }
             floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-            underlineFocusStyle={{ borderColor: Colors.amber700 }}
+            underlineFocusStyle={{ borderColor: '#3498db' }}
             type={ textType }
-            errorStyle={{ borderColor: Colors.amber700 }}
+            errorStyle={{ borderColor: '#3498db' }}
             errorText={ errorText }
             onChange={
               (e) => {
@@ -370,7 +370,7 @@ export default class sysinfoComponent extends React.Component {
               }
               style={{
                 textAlign: 'left',
-                color: Colors.amber700,
+                color: '#3498db',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 fontSize: '14px',
@@ -406,7 +406,7 @@ export default class sysinfoComponent extends React.Component {
                   this._submitPlatformBlock(false);
                 }
               }
-              backgroundColor={ Colors.amber700 }
+              backgroundColor={ '#3498db' }
               style={{
                 width: '236px',
                 flexGrow: 1,
@@ -429,7 +429,7 @@ export default class sysinfoComponent extends React.Component {
           linkButton
           secondary
           label={ __('Upgrade firmware') }
-          backgroundColor={ Colors.amber700 }
+          backgroundColor={ '#3498db' }
           onTouchTap={
             ()=> {
               this._editSoftwareBlock(true);
@@ -508,7 +508,7 @@ export default class sysinfoComponent extends React.Component {
               linkButton
               secondary
               label={ __('Upgrade & Restart') }
-              backgroundColor={ Colors.amber700 }
+              backgroundColor={ '#3498db' }
               disabled={ this.state.upgradeFirmware }
               onTouchTap={
                 () => {
@@ -582,7 +582,7 @@ export default class sysinfoComponent extends React.Component {
               secondary
               label={ __('Reset') }
               onTouchTap={ this._handleStandardDialogTouchTap }
-              backgroundColor={ Colors.amber700 }
+              backgroundColor={ '#3498db' }
               style={{
                 width: '100%',
                 textAlign: 'center',
