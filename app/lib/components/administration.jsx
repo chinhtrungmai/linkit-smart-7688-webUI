@@ -112,6 +112,7 @@ export default class sysinfoComponent extends React.Component {
       this.state.password = info.password;
       this.state.bootLoaderVersion = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].loader_version;
       this.state.firmwareVersion = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].firmware_version;
+      this.state.buildDate = this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].build_date;
       this.state.macaddr = this.props.boardInfo.network.lan.macaddr;
       this.state.wifiMACName = this.props.boardInfo.network.lan.macaddr.split(':')[3] + this.props.boardInfo.network.lan.macaddr.split(':')[4] + this.props.boardInfo.network.lan.macaddr.split(':')[5];
       this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
@@ -424,6 +425,8 @@ export default class sysinfoComponent extends React.Component {
         <h3 style={styles.h3}>{ __('Software information') }</h3>
         <h3 style={ styles.panelTitle }>{ __('Current version') }</h3>
         <p style={ styles.panelContent }>{ this.state.firmwareVersion }</p>
+        <h3 style={ styles.panelTitle }>{ __('Build date') }</h3>
+        <p style={ styles.panelContent }>{ this.state.buildDate }</p>
 
         <RaisedButton
           linkButton
@@ -450,6 +453,8 @@ export default class sysinfoComponent extends React.Component {
           <h3 style={ styles.h3 }>{__('Software information')}</h3>
           <h3 style={ styles.panelTitle }>{ __('Firmware version') }</h3>
           <p style={ styles.panelContent }>{ this.state.firmwareVersion }</p>
+          <h3 style={ styles.panelTitle }>{ __('Build date') }</h3>
+          <p style={ styles.panelContent }>{ this.state.buildDate }</p>
           <Dropzone onDrop={ this._onDrop } style={{ width: '100%', cursor: 'pointer' }}>
             { DropzoneContent }
           </Dropzone>
