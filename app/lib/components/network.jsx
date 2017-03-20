@@ -56,9 +56,26 @@ export default class networkComponent extends React.Component {
     
     this.state.ipModeList = [
       { payload: '0', text: __('Choose the IP mode.') },
-      { payload: 'dhcp', text: __('dhcp') },
-      { payload: 'static', text: __('static') },
+      { payload: 'dhcp', text: __('DHCP') },
+      { payload: 'static', text: __('Static') },
+      { payload: '3g', text: __('USB Modem') },
     ];
+    
+    this.state.usb3gServiceModeList = [
+      { payload: '0', text: __('Choose the service mode.') },
+      { payload: 'umts', text: __('UMTS/GPRS') },
+      { payload: 'umts_only', text: __('UMTS only') },
+      { payload: 'gprs_only', text: __('GPRS only') },
+      { payload: 'evdo', text: __('CDMA/EV-DO') },
+      { payload: 'custom', text: __('-- custom --') },
+    ];
+    
+    var wanService;
+    if ((this.props.boardInfo.network.wan.service != 'umts') && (this.props.boardInfo.network.wan.service != 'umts_only') &&
+            (this.props.boardInfo.network.wan.service != 'gprs_only') && (this.props.boardInfo.network.wan.service != 'evdo'))
+        wanService = "custom";
+    else
+        wanService = this.props.boardInfo.network.wan.service;
     
     if (this.props.boardInfo.wifi.ap.encryption === 'none') {
       this.state.apContent = {
@@ -75,7 +92,7 @@ export default class networkComponent extends React.Component {
         wanIfname: 'apcli0',
       };
     } else {
-      this.state.apContent = {
+        this.state.apContent = {
         ssid: this.props.boardInfo.wifi.ap.ssid || '',
         key: this.props.boardInfo.wifi.ap.key || '',
         encryption: true,
@@ -87,6 +104,14 @@ export default class networkComponent extends React.Component {
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
         wanIfname: 'apcli0',
+        device: this.props.boardInfo.network.wan.device,
+        service: wanService,
+        apn: this.props.boardInfo.network.wan.apn,
+        pincode: this.props.boardInfo.network.wan.pincode,
+        username: this.props.boardInfo.network.wan.username,
+        password: this.props.boardInfo.network.wan.password,
+        dialnumber: this.props.boardInfo.network.wan.dialnumber,
+        customService: this.props.boardInfo.network.wan.service,
       };
     }
 
@@ -107,8 +132,16 @@ export default class networkComponent extends React.Component {
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
         wanIfname: 'apcli0',
+        device: this.props.boardInfo.network.wan.device,
+        service: wanService,
+        apn: this.props.boardInfo.network.wan.apn,
+        pincode: this.props.boardInfo.network.wan.pincode,
+        username: this.props.boardInfo.network.wan.username,
+        password: this.props.boardInfo.network.wan.password,
+        dialnumber: this.props.boardInfo.network.wan.dialnumber,
+        customService: this.props.boardInfo.network.wan.service,
     };
-
+    
     this.state.apstaContent = {
       ssid: this.props.boardInfo.wifi.sta.ssid || '',
       key: this.props.boardInfo.wifi.sta.key || '',
@@ -236,6 +269,10 @@ export default class networkComponent extends React.Component {
     let elemNET2sta;
     let elemNET3ap;
     let elemNET3sta;
+    let elemNETusb3gDevice;
+    let elemNETusb3gService;
+    let elemNETusb3gServiceCustom;
+    let elemNETusb3gRest;
     let staPassword;
 
     if (this.state.showPassword) {
@@ -305,7 +342,15 @@ export default class networkComponent extends React.Component {
                   wan_orig_ifname: this.state.apContent.wan_orig_ifname,
                   wan_orig_bridge: this.state.apContent.wan_orig_bridge,
                   wanIfname: this.state.apContent.wanIfname,
-              },
+                  device: this.state.apContent.device,
+                  service: this.state.apContent.service,
+                  apn: this.state.apContent.apn,
+                  pincode: this.state.apContent.pincode,
+                  username: this.state.apContent.username,
+                  password: this.state.apContent.password,
+                  dialnumber: this.state.apContent.dialnumber,
+                  customService: this.state.apContent.customService,
+               },
              });
            }
          }    
@@ -349,6 +394,14 @@ export default class networkComponent extends React.Component {
                     wan_orig_ifname: this.state.staContent.wan_orig_ifname,
                     wan_orig_bridge: this.state.staContent.wan_orig_bridge,
                     wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
                 },
               });
             }
@@ -390,6 +443,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 			        wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
 	             },
               });
             }
@@ -427,6 +488,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
 			        wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
                 },
               });
             }
@@ -465,6 +534,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
 			        wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
                 },
               });
             }
@@ -496,6 +573,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
 			        wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
                 },
               });
             }
@@ -527,6 +612,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
 			        wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
                 },
               });
             }
@@ -565,6 +658,14 @@ export default class networkComponent extends React.Component {
 			        wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 			        wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 			        wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
                 },
               });
             }
@@ -596,6 +697,14 @@ export default class networkComponent extends React.Component {
 	              wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 	              wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 	              wanIfname: this.state.apContent.wanIfname,
+                  device: this.state.apContent.device,
+                  service: this.state.apContent.service,
+                  apn: this.state.apContent.apn,
+                  pincode: this.state.apContent.pincode,
+                  username: this.state.apContent.username,
+                  password: this.state.apContent.password,
+                  dialnumber: this.state.apContent.dialnumber,
+                  customService: this.state.apContent.customService,
                 },
               });
             }
@@ -627,6 +736,14 @@ export default class networkComponent extends React.Component {
 		            wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 		            wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 		            wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
                 },
               });
             }
@@ -668,6 +785,14 @@ export default class networkComponent extends React.Component {
 				        wan_orig_ifname: this.state.staContent.wan_orig_ifname,
 				        wan_orig_bridge: this.state.staContent.wan_orig_bridge,
 				        wanIfname: this.state.staContent.wanIfname,
+	                    device: this.state.staContent.device,
+	                    service: this.state.staContent.service,
+	                    apn: this.state.staContent.apn,
+	                    pincode: this.state.staContent.pincode,
+	                    username: this.state.staContent.username,
+	                    password: this.state.staContent.password,
+	                    dialnumber: this.state.staContent.dialnumber,
+	                    customService: this.state.staContent.customService,
                     },
                   });
                 }
@@ -786,6 +911,14 @@ export default class networkComponent extends React.Component {
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
+	                    device: this.state.apContent.device,
+	                    service: this.state.apContent.service,
+	                    apn: this.state.apContent.apn,
+	                    pincode: this.state.apContent.pincode,
+	                    username: this.state.apContent.username,
+	                    password: this.state.apContent.password,
+	                    dialnumber: this.state.apContent.dialnumber,
+	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: true,
                   });
@@ -803,6 +936,14 @@ export default class networkComponent extends React.Component {
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
+	                    device: this.state.apContent.device,
+	                    service: this.state.apContent.service,
+	                    apn: this.state.apContent.apn,
+	                    pincode: this.state.apContent.pincode,
+	                    username: this.state.apContent.username,
+	                    password: this.state.apContent.password,
+	                    dialnumber: this.state.apContent.dialnumber,
+	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: false,
                   });
@@ -820,6 +961,14 @@ export default class networkComponent extends React.Component {
 				     	wan_orig_ifname: this.state.apContent.wan_orig_ifname,
 				     	wan_orig_bridge: this.state.apContent.wan_orig_bridge,
 				     	wanIfname: this.state.apContent.wanIfname,
+	                    device: this.state.apContent.device,
+	                    service: this.state.apContent.service,
+	                    apn: this.state.apContent.apn,
+	                    pincode: this.state.apContent.pincode,
+	                    username: this.state.apContent.username,
+	                    password: this.state.apContent.password,
+	                    dialnumber: this.state.apContent.dialnumber,
+	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: false,
                   });
@@ -1000,6 +1149,694 @@ export default class networkComponent extends React.Component {
       break;
     }
 
+    if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g') {
+        elemNETusb3gDevice = (
+        <div>
+          <TextField
+          hintText={__('Input device, ex: /dev/ttyUSB0')}
+          type="text"
+          value={ this.state.apContent.device }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanGateway: this.state.apContent.wanGateway,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: e.target.value,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          </div>
+        );
+    }
+    if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g') {
+        elemNETusb3gService = (
+        <div>
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
+          value={ this.state.apContent.service }
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanGateway: this.state.apContent.wanGateway,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: e.target.value,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }    
+          menuItems={ this.state.usb3gServiceModeList }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Service type') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          <br />
+          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
+          </div>
+        );
+    }
+    if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g' && (this.state.apContent.service == 'custom')) {
+        elemNETusb3gServiceCustom = (
+        <div>
+          <TextField
+          hintText={__('Input Service custom type, ex: umts')}
+          type="text"
+          value={ this.state.apContent.customService }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanGateway: this.state.apContent.wanGateway,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: e.target.value,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Service custom type') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          </div>
+        );
+    }
+    if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g') {
+        elemNETusb3gRest = (
+        <div>
+          <TextField
+          hintText={__('Input APN, ex: v-internet')}
+          type="text"
+          value={ this.state.apContent.apn }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanDns: this.state.apContent.wanDns,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanGateway: this.state.apContent.wanGateway,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: e.target.value,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('APN') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />         
+          <TextField
+          hintText={__('Input PIN')}
+          type="text"
+          value={ this.state.apContent.pincode }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanGateway: this.state.apContent.wanGateway,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: e.target.value,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PIN') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />
+          <TextField
+          hintText={__('Input username')}
+          type="text"
+          value={ this.state.apContent.username}
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanGateway: this.state.apContent.wanGateway,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: e.target.value,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PAP/CHAP uername') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />
+          <TextField
+          hintText={__('Input password')}
+          type="text"
+          value={ this.state.apContent.password }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanDns: this.state.apContent.wanDns,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanGateway: this.state.apContent.wanGateway,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: e.target.value,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PAP/CHAP password') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />         
+          <TextField
+          hintText={__('Input Dial Number')}
+          type="text"
+          value={ this.state.apContent.dialnumber }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanDns: this.state.apContent.wanDns,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanGateway: this.state.apContent.wanGateway,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password ,
+                    dialnumber: e.target.value,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Dial number') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />         
+        </div>
+        );
+    }
+    
+    if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
+        elemNETusb3gDevice = (
+        <div>
+          <TextField
+          hintText={__('Input device, ex: /dev/ttyUSB0')}
+          type="text"
+          value={ this.state.staContent.device }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: e.target.value,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+        </div>
+        );
+    }
+    if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
+        elemNETusb3gService = (
+        <div>
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
+          value={ this.state.staContent.service }
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanGateway: this.state.staContent.wanGateway,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: e.target.value,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }    
+          menuItems={ this.state.usb3gServiceModeList }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Service type') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          <br />
+          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
+          </div>
+        );
+    }
+    if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g' && this.state.staContent.service == 'custom') {
+        elemNETusb3gServiceCustom = (
+        <div>
+          <TextField
+          hintText={__('Input Service custom type, ex: umts')}
+          type="text"
+          value={ this.state.staContent.customService }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanGateway: this.state.staContent.wanGateway,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: e.target.value,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Service custom type') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          </div>
+        );
+    }
+    if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
+        elemNETusb3gRest = (
+        <div>          
+          <TextField
+          hintText={__('Input APN, ex: v-internet')}
+          type="text"
+          value={ this.state.staContent.apn }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanDns: this.state.staContent.wanDns,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: e.target.value,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('APN') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />         
+          <TextField
+          hintText={__('Input PIN')}
+          type="text"
+          value={ this.state.staContent.pincode }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanNetmask: this.state.apstaContent.wanNetmask,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: e.target.value,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PIN') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />
+          <TextField
+          hintText={__('Input username')}
+          type="text"
+          value={ this.state.staContent.username}
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanGateway: this.state.staContent.wanGateway,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: e.target.value,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PAP/CHAP uername') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />
+          <TextField
+          hintText={__('Input password')}
+          type="text"
+          value={ this.state.staContent.password }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanDns: this.state.staContent.wanDns,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: e.target.value,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('PAP/CHAP password') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />         
+          <TextField
+          hintText={__('Input Dial Number')}
+          type="text"
+          value={ this.state.staContent.dialnumber }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanDns: this.state.staContent.wanDns,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanGateway: this.state.staContent.wanGateway,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password ,
+                    dialnumber: e.target.value,
+                },
+              });
+            }
+          }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Dial number') } <b style={{ color: 'red' }}></b>
+            </div>
+          } />         
+        </div>
+        );
+    }
+    
     return (
       <div>
         <Card>
@@ -1081,6 +1918,10 @@ export default class networkComponent extends React.Component {
              { elemNET2sta }
              { elemNET3ap }
              { elemNET3sta }
+             { elemNETusb3gDevice }
+             { elemNETusb3gService }
+             { elemNETusb3gServiceCustom }
+             { elemNETusb3gRest }
             <div style={{
               display: 'flex',
               flexDirection: 'row',
@@ -1215,6 +2056,13 @@ export default class networkComponent extends React.Component {
     change.staContent.wan_orig_ifname = this.state.staContent.wan_orig_ifname;
     change.staContent.wan_orig_bridge = this.state.staContent.wan_orig_bridge;
     change.staContent.wanIfname = this.state.staContent.wanIfname;
+    change.staContent.device= e.target.value,
+    change.staContent.service= this.state.staContent.service,
+    change.staContent.apn= this.state.staContent.apn,
+    change.staContent.pincode= this.state.staContent.pincode,
+    change.staContent.username= this.state.staContent.username,
+    change.staContent.password= this.state.staContent.password,
+    change.staContent.dialnumber= this.state.staContent.dialnumber,
 
     this.setState(change);
   }
@@ -1230,15 +2078,6 @@ export default class networkComponent extends React.Component {
     })
     .then(() => {
       return AppActions.setNet(this.state.mode, this.state[ this.state.mode + 'Content'], window.session);
-    })
-    .then(() => {
-      return AppActions.commitAndReboot(window.session)
-      .catch((err) => {
-        if (err === 'no data') {
-          return false;
-        }
-        return err;
-      });
     })
     .then(() => {
       return this$._returnToIndex(__('Configuration saved. You can sign in to the console after your device has restarted.'));

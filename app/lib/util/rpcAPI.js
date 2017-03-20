@@ -253,6 +253,36 @@ const rpcAPI = {
 
     return this.request(config);
   },
+  setWAN3g: function(wanProto, wan_orig_ifname, wan_orig_bridge, wanIfname, wan_device, wan_service, wan_apn, wan_pincode, wan_username, wan_password, wan_dialnumber, session) {
+    const config = {
+      jsonrpc: '2.0',
+      id: id++,
+      method: 'call',
+      params: [
+        session,
+        'uci',
+        'set',
+        {
+          config: 'network',
+          section: 'wan',
+          values: {
+            proto: wanProto,
+            _orig_ifname: wan_orig_ifname,
+            _orig_bridge: wan_orig_bridge,
+            ifname: wanIfname,
+            device: wan_device,
+            service: wan_service,
+            apn: wan_apn,
+            pincode: wan_pincode,
+            username: wan_username,
+            password: wan_password,
+            dialnumber: wan_dialnumber,
+          },
+        },
+      ],
+    };
+    return this.request(config);
+  },  
   uciCommit: function(uciConfig, session) {
     const config = {
       jsonrpc: '2.0',
