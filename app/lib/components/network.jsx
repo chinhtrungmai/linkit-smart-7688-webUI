@@ -2080,6 +2080,15 @@ export default class networkComponent extends React.Component {
       return AppActions.setNet(this.state.mode, this.state[ this.state.mode + 'Content'], window.session);
     })
     .then(() => {
+      return AppActions.commitAndReboot(window.session)
+      .catch((err) => {
+        if (err === 'no data') {
+          return false;
+        }
+        return err;
+      });
+    })
+    .then(() => {
       return this$._returnToIndex(__('Configuration saved. You can sign in to the console after your device has restarted.'));
     })
     .catch((err) => {
