@@ -117,6 +117,9 @@ const appActions = {
   resetPassword: (user, password) => {
     return rpc.resetPassword(user, password, window.session);
   },
+  resetTimezone: (timezone, session) => {
+    return rpc.resetTimezone(timezone, session);
+  },
   loadNetwork: (session) => {
     return rpc.loadNetwork(session);
   },
