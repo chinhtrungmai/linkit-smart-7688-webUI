@@ -1209,6 +1209,8 @@ export default class networkComponent extends React.Component {
           menuItemStyle={{ maxHeight: '300px' }}
           onChange={
             (e) => {
+              if ((e.target.value == 'custom') && (this.state.apContent.service == '0'))
+                  this.state.apContent.service = '';
               this.setState({
                 apContent: {
                     wanGateway: this.state.apContent.wanGateway,
@@ -1229,7 +1231,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
-                    customService: this.state.apContent.customService,
+                    customService: this.state.apContent.service,
                 },
               });
             }
@@ -1553,6 +1555,8 @@ export default class networkComponent extends React.Component {
           menuItemStyle={{ maxHeight: '300px' }}
           onChange={
             (e) => {
+              if ((e.target.value == 'custom') && (this.state.staContent.service == '0'))
+                  this.state.staContent.service = '';
               this.setState({
                 staContent: {
                     wanGateway: this.state.staContent.wanGateway,
@@ -1573,7 +1577,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
-                    customService: this.state.staContent.customService,
+                    customService: this.state.staContent.service,
                 },
               });
             }
@@ -1615,13 +1619,13 @@ export default class networkComponent extends React.Component {
                     wan_orig_bridge: this.state.staContent.wan_orig_bridge,
                     wanIfname: this.state.staContent.wanIfname,
                     device: this.state.staContent.device,
-                    service: e.target.value,
+                    service: this.state.staContent.service,
                     apn: this.state.staContent.apn,
                     pincode: this.state.staContent.pincode,
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
-                    customService: this.state.staContent.customService,
+                    customService: e.target.value,
                 },
               });
             }
