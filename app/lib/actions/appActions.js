@@ -34,9 +34,12 @@ const appActions = {
   setNet: (mode, content, session) => {
     if (mode === 'ap') {
       if (content.wanProto === "3g") {
-      	var service;
-      	if (content.service == 'custom') service = content.customService; 
-    	  return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, 'eth0', content.device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
+      	var service, device;
+      	if (content.device == 'custom') device = content.customDevice;
+      	else device = content.device;
+      	if (content.service == 'custom') service = content.customService;
+      	else service = content.service;
+    	  return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, 'eth0', device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
         .then(() => {
           rpc.delApLAN(session);
         })
@@ -54,9 +57,12 @@ const appActions = {
       }
     } else if (mode === 'sta') {
     	if (content.wanProto === '3g') {
-      	var service;
+      	var service, device;
+      	if (content.device == 'custom') device = content.customDevice;
+      	else device = content.device;
       	if (content.service == 'custom') service = content.customService;
-	      return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, content.device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
+      	else service = content.service;
+	      return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
 	      .then(() => {
 	        return rpc.uciCommit('network', session);
 	      });    		

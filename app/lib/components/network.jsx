@@ -61,6 +61,18 @@ export default class networkComponent extends React.Component {
       { payload: '3g', text: __('USB Modem') },
     ];
     
+    this.state.usb3gModemDeviceList = [
+      { payload: '0', text: __('Choose the Modem device.') },
+      { payload: '/dev/ttyS0', text: __('/dev/ttyS0') },
+      { payload: '/dev/ttyS1', text: __('/dev/ttyS1') },
+      { payload: '/dev/ttyS2', text: __('/dev/ttyS2') },
+      { payload: '/dev/ttyS3', text: __('/dev/ttyS3') },
+      { payload: '/dev/ttyUSB0', text: __('/dev/ttyUSB0') },
+      { payload: '/dev/ttyUSB1', text: __('/dev/ttyUSB1') },
+      { payload: '/dev/ttyUSB2', text: __('/dev/ttyUSB2') },
+      { payload: 'custom', text: __('-- custom --') },
+    ];
+    
     this.state.usb3gServiceModeList = [
       { payload: '0', text: __('Choose the service mode.') },
       { payload: 'umts', text: __('UMTS/GPRS') },
@@ -69,6 +81,15 @@ export default class networkComponent extends React.Component {
       { payload: 'evdo', text: __('CDMA/EV-DO') },
       { payload: 'custom', text: __('-- custom --') },
     ];
+    
+    var wanDevice;
+    if ((this.props.boardInfo.network.wan.device != '/dev/ttyS0') && (this.props.boardInfo.network.wan.device != '/dev/ttyS1') &&
+            (this.props.boardInfo.network.wan.device != '/dev/ttyS2') && (this.props.boardInfo.network.wan.device != '/dev/ttyS3') &&
+            (this.props.boardInfo.network.wan.device != '/dev/ttyUSB0') && (this.props.boardInfo.network.wan.device != '/dev/ttyUSB1') &&
+            (this.props.boardInfo.network.wan.device != '/dev/ttyUSB2'))
+        wanDevice = "custom";
+    else
+        wanDevice = this.props.boardInfo.network.wan.device;
     
     var wanService;
     if ((this.props.boardInfo.network.wan.service != 'umts') && (this.props.boardInfo.network.wan.service != 'umts_only') &&
@@ -104,13 +125,14 @@ export default class networkComponent extends React.Component {
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
         wanIfname: 'apcli0',
-        device: this.props.boardInfo.network.wan.device,
+        device: wanDevice,
         service: wanService,
         apn: this.props.boardInfo.network.wan.apn,
         pincode: this.props.boardInfo.network.wan.pincode,
         username: this.props.boardInfo.network.wan.username,
         password: this.props.boardInfo.network.wan.password,
         dialnumber: this.props.boardInfo.network.wan.dialnumber,
+        customDevice: this.props.boardInfo.network.wan.device,
         customService: this.props.boardInfo.network.wan.service,
       };
     }
@@ -132,13 +154,14 @@ export default class networkComponent extends React.Component {
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
         wanIfname: 'apcli0',
-        device: this.props.boardInfo.network.wan.device,
+        device: wanDevice,
         service: wanService,
         apn: this.props.boardInfo.network.wan.apn,
         pincode: this.props.boardInfo.network.wan.pincode,
         username: this.props.boardInfo.network.wan.username,
         password: this.props.boardInfo.network.wan.password,
         dialnumber: this.props.boardInfo.network.wan.dialnumber,
+        customDevice: this.props.boardInfo.network.wan.device,
         customService: this.props.boardInfo.network.wan.service,
     };
     
@@ -270,6 +293,7 @@ export default class networkComponent extends React.Component {
     let elemNET3ap;
     let elemNET3sta;
     let elemNETusb3gDevice;
+    let elemNETusb3gDeviceCustom;
     let elemNETusb3gService;
     let elemNETusb3gServiceCustom;
     let elemNETusb3gRest;
@@ -349,6 +373,7 @@ export default class networkComponent extends React.Component {
                   username: this.state.apContent.username,
                   password: this.state.apContent.password,
                   dialnumber: this.state.apContent.dialnumber,
+                  customDevice: this.state.apContent.customDevice,
                   customService: this.state.apContent.customService,
                },
              });
@@ -401,6 +426,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -450,6 +476,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
 	             },
               });
@@ -495,6 +522,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -541,6 +569,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -580,6 +609,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -619,6 +649,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -665,6 +696,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -704,6 +736,7 @@ export default class networkComponent extends React.Component {
                   username: this.state.apContent.username,
                   password: this.state.apContent.password,
                   dialnumber: this.state.apContent.dialnumber,
+                  customDevice: this.state.apContent.customDevice,
                   customService: this.state.apContent.customService,
                 },
               });
@@ -743,6 +776,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -792,6 +826,7 @@ export default class networkComponent extends React.Component {
 	                    username: this.state.staContent.username,
 	                    password: this.state.staContent.password,
 	                    dialnumber: this.state.staContent.dialnumber,
+	                    customDevice: this.state.staContent.customDevice,
 	                    customService: this.state.staContent.customService,
                     },
                   });
@@ -918,6 +953,7 @@ export default class networkComponent extends React.Component {
 	                    username: this.state.apContent.username,
 	                    password: this.state.apContent.password,
 	                    dialnumber: this.state.apContent.dialnumber,
+	                    customDevice: this.state.apContent.customDevice,
 	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: true,
@@ -943,6 +979,7 @@ export default class networkComponent extends React.Component {
 	                    username: this.state.apContent.username,
 	                    password: this.state.apContent.password,
 	                    dialnumber: this.state.apContent.dialnumber,
+	                    customDevice: this.state.apContent.customDevice,
 	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: false,
@@ -968,6 +1005,7 @@ export default class networkComponent extends React.Component {
 	                    username: this.state.apContent.username,
 	                    password: this.state.apContent.password,
 	                    dialnumber: this.state.apContent.dialnumber,
+	                    customDevice: this.state.apContent.customDevice,
 	                    customService: this.state.apContent.customService,
                     },
                     notPassPassword: false,
@@ -1152,22 +1190,29 @@ export default class networkComponent extends React.Component {
     if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g') {
         elemNETusb3gDevice = (
         <div>
-          <TextField
-          hintText={__('Input device, ex: /dev/ttyUSB0')}
-          type="text"
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
           value={ this.state.apContent.device }
-          style={{ width: '100%' }}
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
           onChange={
             (e) => {
+              if ((e.target.value == 'custom') && (this.state.apContent.device == '0'))
+                  this.state.apContent.device = '';
               this.setState({
                 apContent: {
-                    wanNetmask: this.state.apContent.wanNetmask,
+                    wanGateway: this.state.apContent.wanGateway,
                     ssid: this.state.apContent.ssid,
                     key: this.state.apContent.key,
                     encryption: this.state.apContent.encryption,
                     wanProto: this.state.apContent.wanProto,
                     wanIpaddr: this.state.apContent.wanIpaddr,
-                    wanGateway: this.state.apContent.wanGateway,
+                    wanNetmask: this.state.apContent.wanNetmask,
                     wanDns: this.state.apContent.wanDns,
                     wan_orig_ifname: this.state.apContent.wan_orig_ifname,
                     wan_orig_bridge: this.state.apContent.wan_orig_bridge,
@@ -1179,6 +1224,56 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.device,
+                    customService: this.state.apContent.customService,
+                },
+              });
+            }
+          }
+          menuItems={ this.state.usb3gModemDeviceList }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          <br />
+          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
+          </div>
+        );
+    }
+    if (this.state.mode === 'ap' && this.state.apContent.wanProto == '3g' && (this.state.apContent.device == 'custom')) {
+        elemNETusb3gDeviceCustom = (
+        <div>
+          <TextField
+          hintText={__('Input Modem custom device, ex: /dev/ttyUSB0')}
+          type="text"
+          value={ this.state.apContent.customDevice }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                apContent: {
+                    wanGateway: this.state.apContent.wanGateway,
+                    ssid: this.state.apContent.ssid,
+                    key: this.state.apContent.key,
+                    encryption: this.state.apContent.encryption,
+                    wanProto: this.state.apContent.wanProto,
+                    wanIpaddr: this.state.apContent.wanIpaddr,
+                    wanNetmask: this.state.apContent.wanNetmask,
+                    wanDns: this.state.apContent.wanDns,
+                    wan_orig_ifname: this.state.apContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.apContent.wan_orig_bridge,
+                    wanIfname: this.state.apContent.wanIfname,
+                    device: this.state.apContent.device,
+                    service: this.state.apContent.service,
+                    apn: this.state.apContent.apn,
+                    pincode: this.state.apContent.pincode,
+                    username: this.state.apContent.username,
+                    password: this.state.apContent.password,
+                    dialnumber: this.state.apContent.dialnumber,
+                    customDevice: e.target.value,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -1188,7 +1283,7 @@ export default class networkComponent extends React.Component {
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
-              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+              { __('Modem custom device') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
           </div>
@@ -1231,6 +1326,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.service,
                 },
               });
@@ -1279,6 +1375,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: e.target.value,
                 },
               });
@@ -1324,6 +1421,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -1363,6 +1461,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -1402,6 +1501,7 @@ export default class networkComponent extends React.Component {
                     username: e.target.value,
                     password: this.state.apContent.password,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -1441,6 +1541,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.apContent.username,
                     password: e.target.value,
                     dialnumber: this.state.apContent.dialnumber,
+                    customDevice: this.state.apContent.customDevice,
                     customService: this.state.apContent.customService,
                 },
               });
@@ -1498,22 +1599,29 @@ export default class networkComponent extends React.Component {
     if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
         elemNETusb3gDevice = (
         <div>
-          <TextField
-          hintText={__('Input device, ex: /dev/ttyUSB0')}
-          type="text"
+          <SelectField
+          style={{
+            width: '100%',
+            maxWidth: '512px',
+            position: 'absolute',
+          }}
+          multiLine
           value={ this.state.staContent.device }
-          style={{ width: '100%' }}
+          underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+          menuItemStyle={{ maxHeight: '300px' }}
           onChange={
             (e) => {
+              if ((e.target.value == 'custom') && (this.state.staContent.device == '0'))
+                  this.state.staContent.device = '';
               this.setState({
                 staContent: {
-                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanGateway: this.state.staContent.wanGateway,
                     ssid: this.state.staContent.ssid,
                     key: this.state.staContent.key,
                     encryption: this.state.staContent.encryption,
                     wanProto: this.state.staContent.wanProto,
                     wanIpaddr: this.state.staContent.wanIpaddr,
-                    wanGateway: this.state.staContent.wanGateway,
+                    wanNetmask: this.state.staContent.wanNetmask,
                     wanDns: this.state.staContent.wanDns,
                     wan_orig_ifname: this.state.staContent.wan_orig_ifname,
                     wan_orig_bridge: this.state.staContent.wan_orig_bridge,
@@ -1525,6 +1633,56 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.device,
+                    customService: this.state.staContent.customService,
+                },
+              });
+            }
+          }
+          menuItems={ this.state.usb3gModemDeviceList }
+          underlineFocusStyle={{ borderColor: '#3498db' }}
+          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+          floatingLabelText={
+            <div>
+              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+            </div>
+          } />
+          <br />
+          <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '47px', marginBottom: '0px' }}></div>
+          </div>
+        );
+    }
+    if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g' && (this.state.staContent.device == 'custom')) {
+        elemNETusb3gDeviceCustom = (
+        <div>
+          <TextField
+          hintText={__('Input Modem custom device, ex: /dev/ttyUSB0')}
+          type="text"
+          value={ this.state.staContent.customDevice }
+          style={{ width: '100%' }}
+          onChange={
+            (e) => {
+              this.setState({
+                staContent: {
+                    wanGateway: this.state.staContent.wanGateway,
+                    ssid: this.state.staContent.ssid,
+                    key: this.state.staContent.key,
+                    encryption: this.state.staContent.encryption,
+                    wanProto: this.state.staContent.wanProto,
+                    wanIpaddr: this.state.staContent.wanIpaddr,
+                    wanNetmask: this.state.staContent.wanNetmask,
+                    wanDns: this.state.staContent.wanDns,
+                    wan_orig_ifname: this.state.staContent.wan_orig_ifname,
+                    wan_orig_bridge: this.state.staContent.wan_orig_bridge,
+                    wanIfname: this.state.staContent.wanIfname,
+                    device: this.state.staContent.device,
+                    service: this.state.staContent.service,
+                    apn: this.state.staContent.apn,
+                    pincode: this.state.staContent.pincode,
+                    username: this.state.staContent.username,
+                    password: this.state.staContent.password,
+                    dialnumber: this.state.staContent.dialnumber,
+                    customDevice: e.target.value,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -1534,10 +1692,10 @@ export default class networkComponent extends React.Component {
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
           floatingLabelText={
             <div>
-              { __('Modem device') } <b style={{ color: 'red' }}>*</b>
+              { __('Modem custom device') } <b style={{ color: 'red' }}>*</b>
             </div>
           } />
-        </div>
+          </div>
         );
     }
     if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
@@ -1577,6 +1735,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.service,
                 },
               });
@@ -1625,6 +1784,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: e.target.value,
                 },
               });
@@ -1670,6 +1830,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -1709,6 +1870,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -1748,6 +1910,7 @@ export default class networkComponent extends React.Component {
                     username: e.target.value,
                     password: this.state.staContent.password,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -1787,6 +1950,7 @@ export default class networkComponent extends React.Component {
                     username: this.state.staContent.username,
                     password: e.target.value,
                     dialnumber: this.state.staContent.dialnumber,
+                    customDevice: this.state.staContent.customDevice,
                     customService: this.state.staContent.customService,
                 },
               });
@@ -1923,6 +2087,7 @@ export default class networkComponent extends React.Component {
              { elemNET3ap }
              { elemNET3sta }
              { elemNETusb3gDevice }
+             { elemNETusb3gDeviceCustom }
              { elemNETusb3gService }
              { elemNETusb3gServiceCustom }
              { elemNETusb3gRest }
@@ -2067,6 +2232,8 @@ export default class networkComponent extends React.Component {
     change.staContent.username= this.state.staContent.username,
     change.staContent.password= this.state.staContent.password,
     change.staContent.dialnumber= this.state.staContent.dialnumber,
+    change.staContent.customDevice= this.state.staContent.customDevice,
+    change.staContent.customService= this.state.staContent.customService,
 
     this.setState(change);
   }
