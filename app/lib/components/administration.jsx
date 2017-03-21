@@ -12,6 +12,7 @@ const {
   Card,
   FlatButton,
   RaisedButton,
+  SelectField,
   Dialog,
 } = mui;
 const ThemeManager = new mui.Styles.ThemeManager();
@@ -104,6 +105,20 @@ export default class sysinfoComponent extends React.Component {
     this.state.notPassPassword = false;
     this.state.boardModel = '';
 
+    this.state.timezoneList = [
+      { payload: 'Choose the Time zone', text: __('Choose the Time zone') },
+      { payload: '(UTC) London', text: __('(UTC) London') },
+      { payload: '(UTC+5:30) New Delhi', text: __('(UTC+5:30) New Delhi') },
+      { payload: '(UTC+7:00) Hanoi', text: __('(UTC+7:00) Hanoi') },
+    ];
+
+    this.state.timezoneConvertList = [
+      { payload: 'UTC', text: __('Choose the Time zone') },
+      { payload: 'UTC', text: __('(UTC) London') },
+      { payload: 'UTC-5:30', text: __('(UTC+5:30) New Delhi') },
+      { payload: 'UTC-7', text: __('(UTC+7:00) Hanoi') },
+    ];
+
     const info = JSON.parse(localStorage.getItem('info'));
 
     if (this.props.boardInfo) {
@@ -139,6 +154,13 @@ export default class sysinfoComponent extends React.Component {
       default:
         break;
       }
+    }
+
+    for (var i = 1; i < this.state.timezoneConvertList.length; i++) {
+        if (this.props.boardInfo.system[Object.keys(this.props.boardInfo.system)[0]].timezone == this.state.timezoneConvertList[i].payload) {
+            this.state.timezone = this.state.timezoneConvertList[i].text;
+            break;
+        }
     }
 
     this._editPlatformBlock = ::this._editPlatformBlock;
@@ -296,6 +318,8 @@ export default class sysinfoComponent extends React.Component {
         <p style={ styles.panelContent }>root(default)</p>
         <h3 style={ styles.panelTitle }>{ __('Password') } <b style={{ color: 'red' }}>*</b></h3>
         <p style={ styles.panelContent }><input type="password" disable style={{ border: '0px', fontSize: '18px', letterSpacing: '3px' }}value={this.state.password} /></p>
+        <h3 style={ styles.panelTitle }>{ __('Timezone') }</h3>
+        <p style={ styles.panelContent }>{ this.state.timezone }</p>
         <RaisedButton
           linkButton
           secondary
@@ -377,13 +401,42 @@ export default class sysinfoComponent extends React.Component {
                 fontSize: '14px',
               }}>{ __('SHOW PASSWORD') }</a>
           </div>
+          <SelectField
+            style={{
+              width: '100%',
+              maxWidth: '512px',
+              position: 'absolute',
+              marginTop: '-50px',
+            }}
+            multiLine
+            value={ this.state.timezone }
+            underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+            menuItemStyle={{ maxHeight: '300px' }}
+            onChange={
+              (e) => {
+                this.setState({
+                  timezone: e.target.value,
+                });
+              }
+            }
+            menuItems={ this.state.timezoneList }
+            underlineFocusStyle={{ borderColor: '#3498db' }}
+            floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+            floatingLabelText={
+              <div>
+                { __('Time zone') } <b style={{ marginTop: '-50px', color: 'red' }}>*</b>
+              </div>
+            } />
+            <br />
+            <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '-3px', marginBottom: '0px' }}></div>
 
           <div style={{
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginTop: '-40px',
+            marginTop: '0px',
           }}>
+
             <RaisedButton
               linkButton
               label={ __('Cancel') }
@@ -661,6 +714,16 @@ export default class sysinfoComponent extends React.Component {
     return AppActions.resetHostName(this$.state.deviceName, window.session)
     .then(() => {
       return AppActions.resetPassword('root', this$.state.password, window.session);
+    })
+    .then(() => {
+        var timezone;
+        for (var i = 0; i < this.state.timezoneConvertList.length; i++) {
+            if (this.state.timezone == this.state.timezoneConvertList[i].text) {
+                timezone = this.state.timezoneConvertList[i].payload;
+                break;
+            }
+        }
+        return AppActions.resetTimezone(timezone, window.session);
     })
     .then(() => {
       return AppActions.commitAndReboot(window.session)

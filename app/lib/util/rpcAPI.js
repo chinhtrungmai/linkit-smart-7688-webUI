@@ -488,6 +488,24 @@ const rpcAPI = {
 
     return this.request(config);
   },
+  resetTimezone: function(timezone, session) {
+    const config = {
+      jsonrpc: '2.0',
+      id: id++,
+      method: 'call',
+      params: [
+        session,
+        'uci',
+        'set', {
+          config: 'system',
+          section: '@system[0]',
+          values: { timezone: timezone },
+        },
+      ],
+    };
+
+    return this.request(config);
+  },
 };
 
 export default rpcAPI;
