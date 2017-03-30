@@ -110,7 +110,16 @@ export default class networkComponent extends React.Component {
         wanDns: this.props.boardInfo.network.wan.dns,
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
-        wanIfname: 'apcli0',
+        wanIfname: 'eth0',
+        device: wanDevice,
+        service: wanService,
+        apn: this.props.boardInfo.network.wan.apn,
+        pincode: this.props.boardInfo.network.wan.pincode,
+        username: this.props.boardInfo.network.wan.username,
+        password: this.props.boardInfo.network.wan.password,
+        dialnumber: this.props.boardInfo.network.wan.dialnumber,
+        customDevice: this.props.boardInfo.network.wan.device,
+        customService: this.props.boardInfo.network.wan.service,
       };
     } else {
         this.state.apContent = {
@@ -124,7 +133,7 @@ export default class networkComponent extends React.Component {
         wanDns: this.props.boardInfo.network.wan.dns,
         wan_orig_ifname: 'apcli0',
         wan_orig_bridge: 'false',
-        wanIfname: 'apcli0',
+        wanIfname: 'eth0',
         device: wanDevice,
         service: wanService,
         apn: this.props.boardInfo.network.wan.apn,

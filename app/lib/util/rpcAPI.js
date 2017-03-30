@@ -204,7 +204,7 @@ const rpcAPI = {
 
     return this.request(config);
   },
-  delApLAN: function(session) {
+  setLANifname: function(ifname, session) {
     const config = {
       jsonrpc: '2.0',
       id: id++,
@@ -212,12 +212,12 @@ const rpcAPI = {
       params: [
         session,
         'uci',
-        'delete',
+        'set',
         {
           config: 'network',
           section: 'lan',
           values: {
-            ifname: 'eth0',
+            ifname: ifname,
           },
         },
       ],
@@ -282,7 +282,28 @@ const rpcAPI = {
       ],
     };
     return this.request(config);
-  },  
+  },
+  setLANconfig3g: function(session) {
+      const config = {
+        jsonrpc: '2.0',
+        id: id++,
+        method: 'call',
+        params: [
+          session,
+          'uci',
+          'set',
+          {
+            config: 'network',
+            section: 'lan',
+            values: {
+              ifname: 'eth0',
+              proto: 'dhcp',
+            },
+          },
+        ],
+      };
+      return this.request(config);
+    },
   uciCommit: function(uciConfig, session) {
     const config = {
       jsonrpc: '2.0',
