@@ -20,7 +20,7 @@ const appActions = {
   isLocalStorageNameSupported: isLocalStorageNameSupported,
 
   commitAndReboot: (session) => {
-    return rpc.commitWifi(session)
+    return rpc.reboot(session)
     .then(() => {
       return rpc.reboot(session);
     })
