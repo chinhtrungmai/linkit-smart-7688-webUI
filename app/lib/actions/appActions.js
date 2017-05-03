@@ -123,7 +123,10 @@ const appActions = {
     return rpc.resetPassword(user, password, window.session);
   },
   resetTimezone: (timezone, session) => {
-    return rpc.resetTimezone(timezone, session);
+    return rpc.resetTimezone(timezone, session)
+    .then(() => {
+      return rpc.uciCommit('system', session);
+    });
   },
   loadNetwork: (session) => {
     return rpc.loadNetwork(session);
