@@ -527,6 +527,26 @@ const rpcAPI = {
 
     return this.request(config);
   },
+  resetRunningMode: function(runMode, ip, port, session) {
+    const config = {
+      jsonrpc: '2.0',
+      id: id++,
+      method: 'call',
+      params: [
+        session,
+        'uci',
+        'set', {
+          config: 'system',
+          section: '@system[0]',
+          values: {
+            running_mode: runMode,
+            ip: ip,
+            port: port },
+        }
+      ]
+    };
+    return this.request(config);
+  },
 };
 
 export default rpcAPI;

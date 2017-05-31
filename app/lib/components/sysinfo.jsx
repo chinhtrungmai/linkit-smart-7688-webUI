@@ -110,6 +110,17 @@ export default class sysinfoComponent extends React.Component {
       this.state.wifiMACName = this.props.boardInfo.network.lan.macaddr.split(':')[3] + this.props.boardInfo.network.lan.macaddr.split(':')[4] + this.props.boardInfo.network.lan.macaddr.split(':')[5];
       this.state.mode = this.props.boardInfo.wifi.radio0.linkit_mode;
 
+      this.state.runModeConvertList = [
+          { payload: 'hc', text: __( 'Home Controller' ) },
+          { payload: 'lc', text: __( 'Local Controller' ) },
+      ];
+      for ( var i = 0; i < this.state.runModeConvertList.length; i++ ) {
+          if ( this.props.boardInfo.system[Object.keys( this.props.boardInfo.system )[0]].running_mode == this.state.runModeConvertList[i].payload ) {
+              this.state.runMode = this.state.runModeConvertList[i].text;
+              break;
+          }
+      }
+
       switch(this.props.boardInfo.network.lan.proto) {
       case 'dhcp':
       	break;
@@ -203,6 +214,8 @@ export default class sysinfoComponent extends React.Component {
         <p style={ styles.panelContent }>{ this.state.deviceName }</p>
         <h3 style={ styles.panelTitle }>{ __('MAC address') }</h3>
         <p style={ styles.panelContent }>{ this.state.macaddr }</p>
+        <h3 style={ styles.panelTitle }>{ __('Running mode') }</h3>
+        <p style={ styles.panelContent }>{ this.state.runMode }</p>
         <h3 style={ styles.panelTitle }>{ __('Current IP address') }</h3>
         <p style={ styles.panelContent }>{ this.state.currentIp }</p>
       </div>

@@ -128,6 +128,12 @@ const appActions = {
       return rpc.uciCommit('system', session);
     });
   },
+  resetRunningMode: (runmode, ip, port, session) => {
+    return rpc.resetRunningMode(runmode, ip, port, session)
+    .then(() => {
+      return rpc.uciCommit('system', session);
+    });
+  },
   loadNetwork: (session) => {
     return rpc.loadNetwork(session);
   },
