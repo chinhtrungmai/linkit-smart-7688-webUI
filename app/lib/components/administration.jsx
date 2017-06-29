@@ -243,14 +243,12 @@ export default class sysinfoComponent extends React.Component {
 
         this._editPlatformBlock = ::this._editPlatformBlock;
         this._editSoftwareBlock = ::this._editSoftwareBlock;
-        this._editRunningBlock = ::this._editRunningBlock;
         this._onDrop = ::this._onDrop;
         this._onReset = ::this._onReset;
         this._onFactorySubmit = ::this._onFactorySubmit;
         this._handleStandardDialogTouchTap = ::this._handleStandardDialogTouchTap;
         this._onSubmitFirmware = ::this._onSubmitFirmware;
         this._submitPlatformBlock = ::this._submitPlatformBlock;
-        this._submitRunningBlock = ::this._submitRunningBlock;
         this._cancelDialog = ::this._cancelDialog;
         this._returnToIndex = ::this._returnToIndex;
         this._returnToSetPassword = ::this._returnToSetPassword;
@@ -401,6 +399,13 @@ export default class sysinfoComponent extends React.Component {
                 <p style={styles.panelContent}><input type="password" disable style={{ border: '0px', fontSize: '18px', letterSpacing: '3px' }} value={this.state.password} /></p>
                 <h3 style={styles.panelTitle}>{__( 'Timezone' )}</h3>
                 <p style={styles.panelContent}>{this.state.timezone}</p>
+                <h3 style={styles.h3}>{__( 'Running mode' )}</h3>
+                <h3 style={styles.panelTitle}>{__( 'Running mode' )}</h3>
+                <p style={styles.panelContent}>{this.state.runMode}</p>
+                <h3 style={styles.panelTitle}>{__( 'IP' )}</h3>
+                <p style={styles.panelContent}>{this.state.ip}</p>
+                <h3 style={styles.panelTitle}>{__( 'Port' )}</h3>
+                <p style={styles.panelContent}>{this.state.port}</p>
                 <RaisedButton
                     linkButton
                     secondary
@@ -509,14 +514,76 @@ export default class sysinfoComponent extends React.Component {
                             </div>
                         } />
                     <br />
-                    <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '-3px', marginBottom: '0px' }}></div>
+                    <div style={{ borderTop: '1px solid rgba(255,156,52,1)', marginTop: '-3px', marginBottom: '20px' }}></div>
 
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: '0px',
-                    }}>
+                    <h3 style={styles.h3}>{__( 'Running mode' )}</h3>
+                    <SelectField
+                      style={{
+                          width: '100%',
+                          maxWidth: '512px',
+                          position: 'absolute',
+                          marginTop: '0px',
+                      }}
+                      multiLine
+                      value={this.state.runMode}
+                      underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
+                      menuItemStyle={{ maxHeight: '300px' }}
+                      onChange={
+                          ( e ) => {
+                              this.setState( {
+                                  runMode: e.target.value,
+                              } );
+                          }
+                      }
+                      menuItems={this.state.runModeList}
+                      underlineFocusStyle={{ borderColor: '#3498db' }}
+                      floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+                      floatingLabelText={
+                          <div>
+                              {__( 'Running mode' )} <b style={{ marginTop: '-50px', color: 'red' }}>*</b>
+                          </div>
+                    } />
+                    <TextField
+                        hintText={__( 'IP' )}
+                        floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+                        style={{ width: '100%', marginTop: '60px' }}
+                        defaultValue={this.state.ip}
+                        underlineStyle={{ borderColor: '#D1D2D3' }}
+                        underlineFocusStyle={{
+                            borderColor: '#3498db',
+                            borderWidth: '2px',
+                        }}
+                        onChange={
+                            ( e ) => {
+                                this.setState( { ip: e.target.value } );
+                            }
+                        }
+                        floatingLabelText={__( 'IP' )
+                      } />
+                      <TextField
+                          hintText={__( 'Port' )}
+                          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
+                          style={{ width: '100%',  marginTop: '-10px' }}
+                          defaultValue={this.state.port}
+                          underlineStyle={{ borderColor: '#D1D2D3' }}
+                          underlineFocusStyle={{
+                              borderColor: '#3498db',
+                              borderWidth: '2px',
+                          }}
+                          onChange={
+                              ( e ) => {
+                                  this.setState( { port: e.target.value } );
+                              }
+                          }
+                          floatingLabelText={__( 'Port' )
+                        } />
+
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            marginTop: '0px',
+                        }}>
 
                         <RaisedButton
                             linkButton
@@ -668,138 +735,6 @@ export default class sysinfoComponent extends React.Component {
             );
         }
 
-        let runningBlock = (
-          <div style={styles.content} key="runningBlock">
-              <h3 style={styles.h3}>{__( 'Running mode' )}</h3>
-              <h3 style={styles.panelTitle}>{__( 'Running mode' )}</h3>
-              <p style={styles.panelContent}>{this.state.runMode}</p>
-              <h3 style={styles.panelTitle}>{__( 'IP' )}</h3>
-              <p style={styles.panelContent}>{this.state.ip}</p>
-              <h3 style={styles.panelTitle}>{__( 'Port' )}</h3>
-              <p style={styles.panelContent}>{this.state.port}</p>
-
-              <RaisedButton
-                  linkButton
-                  secondary
-                  label={__( 'Configure' )}
-                  backgroundColor={'#49BA6F'}
-                  onTouchTap={
-                      () => {
-                          this._editRunningBlock( true );
-                      }
-                  }
-                  style={{
-                      width: '100%',
-                      textAlign: 'center',
-                      marginTop: '-20px',
-                      marginBottom: '20px',
-                  }} />
-          </div>
-        );
-
-        if ( this.state.RunningBlockIsEdit ) {
-          runningBlock = (
-            <div style={styles.content} key="runningBlockIsEdit">
-              <h3 style={styles.h3}>{__( 'Running mode' )}</h3>
-              <div style={{ borderTop: '1px solid rgba(209,210,211,1)', marginTop: '60px', marginBottom: '-15px' }}></div>
-              <SelectField
-                style={{
-                    width: '100%',
-                    maxWidth: '512px',
-                    position: 'absolute',
-                    marginTop: '-50px',
-                }}
-                multiLine
-                value={this.state.runMode}
-                underlineStyle={{ maxHeight: '100px', overflow: 'hidden' }}
-                menuItemStyle={{ maxHeight: '300px' }}
-                onChange={
-                    ( e ) => {
-                        this.setState( {
-                            runMode: e.target.value,
-                        } );
-                    }
-                }
-                menuItems={this.state.runModeList}
-                underlineFocusStyle={{ borderColor: '#49BA6F' }}
-                floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-                floatingLabelText={
-                    <div>
-                        {__( 'Running mode' )} <b style={{ marginTop: '-50px', color: 'red' }}>*</b>
-                    </div>
-              } />
-              <div style={{ borderTop: '1px solid rgba(209,210,211,1)', marginTop: '15px', marginBottom: '10px' }}></div>
-              <TextField
-                  hintText={__( 'IP' )}
-                  floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-                  style={{ width: '100%' }}
-                  defaultValue={this.state.ip}
-                  underlineStyle={{ borderColor: '#D1D2D3' }}
-                  underlineFocusStyle={{
-                      borderColor: '#49BA6F',
-                      borderWidth: '2px',
-                  }}
-                  onChange={
-                      ( e ) => {
-                          this.setState( { ip: e.target.value } );
-                      }
-                  }
-                  floatingLabelText={__( 'IP' )
-                } />
-                <TextField
-                    hintText={__( 'Port' )}
-                    floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
-                    style={{ width: '100%' }}
-                    defaultValue={this.state.port}
-                    underlineStyle={{ borderColor: '#D1D2D3' }}
-                    underlineFocusStyle={{
-                        borderColor: '#49BA6F',
-                        borderWidth: '2px',
-                    }}
-                    onChange={
-                        ( e ) => {
-                            this.setState( { port: e.target.value } );
-                        }
-                    }
-                    floatingLabelText={__( 'Port' )
-                  } />
-
-                  <RaisedButton
-                      linkButton
-                      label={__( 'Cancel' )}
-                      onTouchTap={() => { this._editRunningBlock( false ); }}
-                      backgroundColor="#EDEDED"
-                      labelColor="#999A94"
-                      style={{
-                          width: '236px',
-                          flexGrow: 1,
-                          textAlign: 'center',
-                          marginTop: '20px',
-                          marginBottom: '20px',
-                          marginRight: '10px',
-                  }} />
-                  <RaisedButton
-                      linkButton
-                      secondary
-                      label={__( 'Configure & Restart' )}
-                      onTouchTap={
-                          () => {
-                              this._submitRunningBlock(true);
-                          }
-                      }
-                      backgroundColor={'#49BA6F'}
-                      style={{
-                          width: '236px',
-                          flexGrow: 1,
-                          textAlign: 'center',
-                          marginTop: '20px',
-                          marginBottom: '20px',
-                          marginLeft: '10px'
-                  }} />
-            </div>
-          )
-        }
-
         return (
             <div>
                 <Card>
@@ -835,8 +770,6 @@ export default class sysinfoComponent extends React.Component {
                     {PlatformBlock}
                     <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '20px', marginBottom: '0px' }}></div>
                     {softwareBlock}
-                    <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '20px', marginBottom: '0px' }}></div>
-                    {runningBlock}
                     <div style={{ borderTop: '1px solid rgba(0,0,0,0.12)', marginTop: '20px', marginBottom: '0px' }}></div>
                     <div style={styles.content} key="reset">
                         <h3 style={styles.h3}>{__( 'Factory reset' )}</h3>
@@ -877,11 +810,6 @@ export default class sysinfoComponent extends React.Component {
     _editSoftwareBlock( status ) {
         const this$ = this;
         setTimeout(() => { return this$.setState( { SoftwareBlockIsEdit: status } ); }, 300 );
-    }
-
-    _editRunningBlock( status ) {
-        const this$ = this;
-        setTimeout(() => { return this$.setState( { RunningBlockIsEdit: status } ); }, 300 );
     }
 
     _onFactorySubmit() {
@@ -947,6 +875,16 @@ export default class sysinfoComponent extends React.Component {
                 return AppActions.resetTimezone( timezone, window.session );
             } )
             .then(() => {
+                var runMode;
+                for ( var i = 0; i < this.state.runModeConvertList.length; i++ ) {
+                    if ( this.state.runMode == this.state.runModeConvertList[i].text ) {
+                        runMode = this.state.runModeConvertList[i].payload;
+                        break;
+                    }
+                }
+                return AppActions.resetRunningMode( runMode, this$.state.ip, this$.state.port, window.session );
+            })
+            .then(() => {
                 return AppActions.commitAndReboot( window.session )
                     .then(() => {
                         return;
@@ -1003,40 +941,6 @@ export default class sysinfoComponent extends React.Component {
                 }
                 alert( err );
             } );
-    }
-
-    _submitRunningBlock() {
-      const this$ = this;
-      var runMode;
-      for ( var i = 0; i < this.state.runModeConvertList.length; i++ ) {
-          if ( this.state.runMode == this.state.runModeConvertList[i].text ) {
-              runMode = this.state.runModeConvertList[i].payload;
-              break;
-          }
-      }
-      return AppActions.resetRunningMode( runMode, this$.state.ip, this$.state.port, window.session )
-      .then(() => {
-        return AppActions.commitAndReboot( window.session )
-        .then(() => {
-          return;
-        })
-        .catch(( err ) => {
-          if ( err === 'no data' ) {
-            return false;
-          }
-          return err;
-        });
-      })
-      .then(() => {
-        return this$._returnToIndex( __( 'Configuration saved. You can sign in to the console after your device has restarted.' ) );
-      })
-      .catch(( err ) => {
-        if ( err === 'Access denied' ) {
-          this$.setState( { errorMsgTitle: __( 'Access denied' ), errorMsg: __( 'Your token was expired, please sign in again.' ) } );
-          return this$.refs.errorMsg.show();
-        }
-        alert( err );
-      });
     }
 
     _returnToIndex( successMsg, errorMsg ) {
