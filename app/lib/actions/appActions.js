@@ -41,7 +41,7 @@ const appActions = {
       	else service = content.service;
         return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, remove, device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
         .then(() => {
-          rpc.setLANconfig3g(session);
+          return rpc.setLANconfig3g(session);
         })
         .then(() => {
           return rpc.uciCommit('network', session);
@@ -49,8 +49,9 @@ const appActions = {
       } else {
         return rpc.setWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, 'eth0', session)
         .then(() => {
-          var remove='apcli0';
-          rpc.setLANifname(remove, session);
+          var lan_ifname='apcli0';
+          var type='bridge';
+          return rpc.setLANifname(lan_ifname, type, session);
         })
         .then(() => {
           return rpc.uciCommit('network', session);
@@ -71,7 +72,8 @@ const appActions = {
 	    return rpc.setWAN(content.wanProto, content.wanIpaddr, content.wanNetmask, content.wanGateway, content.wanDns, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, session)
 	    .then(() => {
           var lan_ifname = 'eth0';
-          rpc.setLANifname(lan_ifname, session);
+          var type='';
+          return rpc.setLANifname(lan_ifname, type, session);
         })
 	    .then(() => {
 	      return rpc.uciCommit('network', session);

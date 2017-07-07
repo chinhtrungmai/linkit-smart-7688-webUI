@@ -204,7 +204,7 @@ const rpcAPI = {
 
     return this.request(config);
   },
-  setLANifname: function(ifname, session) {
+  setLANifname: function(ifnameLan, typeLan, session) {
     const config = {
       jsonrpc: '2.0',
       id: id++,
@@ -217,7 +217,8 @@ const rpcAPI = {
           config: 'network',
           section: 'lan',
           values: {
-            ifname: ifname,
+            ifname: ifnameLan,
+            type: typeLan,
           },
         },
       ],
