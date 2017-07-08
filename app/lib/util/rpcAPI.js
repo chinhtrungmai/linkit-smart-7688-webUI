@@ -299,6 +299,7 @@ const rpcAPI = {
             values: {
               ifname: 'eth0',
               proto: 'dhcp',
+              type: 'bridge',
             },
           },
         ],

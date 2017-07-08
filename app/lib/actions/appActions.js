@@ -33,7 +33,7 @@ const appActions = {
   },
   setNet: (mode, content, session) => {
     if (mode === 'ap') {
-      if (content.wanProto === "3g") {
+      if (content.wanProto === '3g') {
         var service, device, remove;
       	if (content.device == 'custom') device = content.customDevice;
       	else device = content.device;
@@ -65,6 +65,11 @@ const appActions = {
       	if (content.service == 'custom') service = content.customService;
       	else service = content.service;
         return rpc.setWAN3g(content.wanProto, content.wan_orig_ifname, content.wan_orig_bridge, content.wanIfname, device, service, content.apn, content.pincode, content.username, content.password, content.dialnumber, session)
+        .then(() => {
+          var lan_ifname = 'eth0';
+          var type='';
+          return rpc.setLANifname(lan_ifname, type, session);
+        })
         .then(() => {
           return rpc.uciCommit('network', session);
         });
