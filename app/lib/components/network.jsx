@@ -53,14 +53,14 @@ export default class networkComponent extends React.Component {
       payload: 0,
       text: __('Choose the Wi-Fi network.'),
     }];
-    
+
     this.state.ipModeList = [
       { payload: '0', text: __('Choose the IP mode.') },
       { payload: 'dhcp', text: __('DHCP') },
       { payload: 'static', text: __('Static') },
       { payload: '3g', text: __('USB Modem') },
     ];
-    
+
     this.state.usb3gModemDeviceList = [
       { payload: '0', text: __('Choose the Modem device.') },
       { payload: '/dev/ttyS0', text: __('/dev/ttyS0') },
@@ -72,7 +72,7 @@ export default class networkComponent extends React.Component {
       { payload: '/dev/ttyUSB2', text: __('/dev/ttyUSB2') },
       { payload: 'custom', text: __('-- custom --') },
     ];
-    
+
     this.state.usb3gServiceModeList = [
       { payload: '0', text: __('Choose the service mode.') },
       { payload: 'umts', text: __('UMTS/GPRS') },
@@ -81,7 +81,7 @@ export default class networkComponent extends React.Component {
       { payload: 'evdo', text: __('CDMA/EV-DO') },
       { payload: 'custom', text: __('-- custom --') },
     ];
-    
+
     var wanDevice;
     if ((this.props.boardInfo.network.wan.device != '/dev/ttyS0') && (this.props.boardInfo.network.wan.device != '/dev/ttyS1') &&
             (this.props.boardInfo.network.wan.device != '/dev/ttyS2') && (this.props.boardInfo.network.wan.device != '/dev/ttyS3') &&
@@ -90,14 +90,14 @@ export default class networkComponent extends React.Component {
         wanDevice = "custom";
     else
         wanDevice = this.props.boardInfo.network.wan.device;
-    
+
     var wanService;
     if ((this.props.boardInfo.network.wan.service != 'umts') && (this.props.boardInfo.network.wan.service != 'umts_only') &&
             (this.props.boardInfo.network.wan.service != 'gprs_only') && (this.props.boardInfo.network.wan.service != 'evdo'))
         wanService = "custom";
     else
         wanService = this.props.boardInfo.network.wan.service;
-    
+
     if (this.props.boardInfo.wifi.ap.encryption === 'none') {
       this.state.apContent = {
         ssid: this.props.boardInfo.wifi.ap.ssid || '',
@@ -173,7 +173,7 @@ export default class networkComponent extends React.Component {
         customDevice: this.props.boardInfo.network.wan.device,
         customService: this.props.boardInfo.network.wan.service,
     };
-    
+
     this.state.apstaContent = {
       ssid: this.props.boardInfo.wifi.sta.ssid || '',
       key: this.props.boardInfo.wifi.sta.key || '',
@@ -243,7 +243,7 @@ export default class networkComponent extends React.Component {
     }
     var dns=this.props.boardInfo.network.lan.dns;
     if (dns=='undefined') dns='--';
-    
+
     this.state.staContent.wanIpaddr=address;
     this.state.staContent.wanNetmask=Netmask;
     this.state.staContent.wanGateway=gateway;
@@ -387,7 +387,7 @@ export default class networkComponent extends React.Component {
                },
              });
            }
-         }    
+         }
          menuItems={ this.state.ipModeList }
          underlineFocusStyle={{ borderColor: '#49BA6F' }}
          floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
@@ -440,7 +440,7 @@ export default class networkComponent extends React.Component {
                 },
               });
             }
-          }    
+          }
           menuItems={ this.state.ipModeList }
           underlineFocusStyle={{ borderColor: '#49BA6F' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
@@ -670,7 +670,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('DNS server') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />         
+          } />
 	    </div>
     	);
 	}
@@ -797,7 +797,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('DNS server') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />         
+          } />
   		</div>
   	  );
 	}
@@ -1340,7 +1340,7 @@ export default class networkComponent extends React.Component {
                 },
               });
             }
-          }    
+          }
           menuItems={ this.state.usb3gServiceModeList }
           underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
@@ -1442,7 +1442,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('APN') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />         
+          } />
           <TextField
           hintText={__('Input PIN')}
           type="text"
@@ -1562,7 +1562,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('PAP/CHAP password') } <b style={{ color: 'red' }}></b>
             </div>
-          } />         
+          } />
           <TextField
           hintText={__('Input Dial Number')}
           type="text"
@@ -1600,11 +1600,11 @@ export default class networkComponent extends React.Component {
             <div>
               { __('Dial number') } <b style={{ color: 'red' }}></b>
             </div>
-          } />         
+          } />
         </div>
         );
     }
-    
+
     if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
         elemNETusb3gDevice = (
         <div>
@@ -1749,7 +1749,7 @@ export default class networkComponent extends React.Component {
                 },
               });
             }
-          }    
+          }
           menuItems={ this.state.usb3gServiceModeList }
           underlineFocusStyle={{ borderColor: '#3498db' }}
           floatingLabelStyle={{ color: 'rgba(0, 0, 0, 0.498039)' }}
@@ -1811,7 +1811,7 @@ export default class networkComponent extends React.Component {
     }
     if (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g') {
         elemNETusb3gRest = (
-        <div>          
+        <div>
           <TextField
           hintText={__('Input APN, ex: v-internet')}
           type="text"
@@ -1851,7 +1851,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('APN') } <b style={{ color: 'red' }}>*</b>
             </div>
-          } />         
+          } />
           <TextField
           hintText={__('Input PIN')}
           type="text"
@@ -1971,7 +1971,7 @@ export default class networkComponent extends React.Component {
             <div>
               { __('PAP/CHAP password') } <b style={{ color: 'red' }}></b>
             </div>
-          } />         
+          } />
           <TextField
           hintText={__('Input Dial Number')}
           type="text"
@@ -2009,11 +2009,11 @@ export default class networkComponent extends React.Component {
             <div>
               { __('Dial number') } <b style={{ color: 'red' }}></b>
             </div>
-          } />         
+          } />
         </div>
         );
     }
-    
+
     return (
       <div>
         <Card>
@@ -2117,7 +2117,7 @@ export default class networkComponent extends React.Component {
                   marginRight: '10px',
                 }}
                 backgroundColor="#EDEDED"
-                labelColor="#999A94" />            
+                labelColor="#999A94" />
               <RaisedButton
                 linkButton
                 secondary
@@ -2234,7 +2234,7 @@ export default class networkComponent extends React.Component {
     change.staContent.wan_orig_ifname = this.state.staContent.wan_orig_ifname;
     change.staContent.wan_orig_bridge = this.state.staContent.wan_orig_bridge;
     change.staContent.wanIfname = this.state.staContent.wanIfname;
-    change.staContent.device= e.target.value,
+    change.staContent.device= this.state.staContent.device,
     change.staContent.service= this.state.staContent.service,
     change.staContent.apn= this.state.staContent.apn,
     change.staContent.pincode= this.state.staContent.pincode,
@@ -2249,12 +2249,17 @@ export default class networkComponent extends React.Component {
 
   _handleSettingMode() {
     const this$ = this;
+    let disable = '0';
+    if ((this.state.mode === 'ap' && this.state.apContent.wanProto == '3g') || (this.state.mode === 'sta' && this.state.staContent.wanProto == '3g')) {
+        disable = '1';
+    }
+
     if (this.state.notPassPassword) {
       return false;
     }
     return AppActions.setWifi(this.state.mode, this.state[ this.state.mode + 'Content'], window.session)
     .then(() => {
-      return AppActions.setWifiMode(this.state.mode, window.session);
+      return AppActions.setWifiMode(this.state.mode, disable, window.session);
     })
     .then(() => {
       return AppActions.setNet(this.state.mode, this.state[ this.state.mode + 'Content'], window.session);

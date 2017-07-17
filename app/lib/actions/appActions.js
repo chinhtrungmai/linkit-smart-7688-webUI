@@ -32,8 +32,8 @@ const appActions = {
     return rpc.loadModel(session);
   },
   setNet: (mode, content, session) => {
-    if (mode === 'ap') {
-      if (content.wanProto === '3g') {
+    if (mode == 'ap') {
+      if (content.wanProto == '3g') {
         var service, device, remove;
       	if (content.device == 'custom') device = content.customDevice;
       	else device = content.device;
@@ -57,8 +57,8 @@ const appActions = {
           return rpc.uciCommit('network', session);
         });
       }
-    } else if (mode === 'sta') {
-      if (content.wanProto === '3g') {
+    } else if (mode == 'sta') {
+      if (content.wanProto == '3g') {
       	var service, device;
       	if (content.device == 'custom') device = content.customDevice;
       	else device = content.device;
@@ -89,7 +89,7 @@ const appActions = {
   setWifi: (mode, content, session) => {
     return rpc.setWifi(mode, content.ssid, content.key, session);
   },
-  setWifiMode: (mode, session) => {
+  setWifiMode: (mode, disable, session) => {
     let network = 'lan';
     let ignore = 1;
     let proto = 'dhcp';
@@ -100,7 +100,7 @@ const appActions = {
       proto = 'static';
     }
 
-    return rpc.setWifiMode(mode, session)
+    return rpc.setWifiMode(mode, disable, session)
     .then(() => {
       return rpc.setWifiNetworkConfig(network, session);
     })

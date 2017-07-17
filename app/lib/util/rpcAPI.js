@@ -155,7 +155,7 @@ const rpcAPI = {
     };
     return this.request(config);
   },
-  setWifiMode: function(mode, session) {
+  setWifiMode: function(mode, disable, session) {
     const config = {
       jsonrpc: '2.0',
       id: id++,
@@ -169,6 +169,7 @@ const rpcAPI = {
           section: 'radio0',
           values: {
             linkit_mode: mode,
+            disabled: disable,
           },
         },
       ],
